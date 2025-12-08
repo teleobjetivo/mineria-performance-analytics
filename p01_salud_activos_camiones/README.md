@@ -70,13 +70,18 @@ Los pasos principales son:
 
 ## 5. Resultados clave (ejemplo de interpretación)
 
-> **Nota:** Los valores específicos dependen del dataset simulado; aquí se muestra la forma de interpretar los resultados.
+> Nota: Los valores específicos dependen del dataset simulado; aquí se muestra el tipo de conclusiones que se pueden obtener.
 
-- La **disponibilidad promedio de la flota** se sitúa en torno a un valor entre kpis_equipo["disponibilidad"].min()*100 redondeado
- y kpis_equipo["disponibilidad"].max()*100 o el promedio (según el resumen estadístico de `disponibilidad`).
-- Algunos camiones presentan una disponibilidad significativamente menor que el resto, concentrando una proporción importante de las horas de detención. Estos equipos serían candidatos naturales para planes de mejora de confiabilidad.
-- El análisis de Pareto muestra que un grupo reducido de causas raíz (por ejemplo, *fugas hidráulicas* y *sobrecalentamiento de motor*) explica la mayor parte de las horas de paro, lo que permite focalizar acciones de mantenimiento sobre esos modos de falla.
-- Los indicadores **MTBF** y **MTTR** por equipo permiten comparar el comportamiento de los activos y evaluar el impacto de futuras iniciativas de mejora (por ejemplo, reducción de tiempos de reparación o aumento de la efectividad del mantenimiento preventivo).
+- La **disponibilidad promedio de la flota** se mantiene en un rango razonable, pero se observan diferencias claras entre equipos: algunos camiones muestran disponibilidades cercanas al mínimo del conjunto, lo que los convierte en candidatos naturales para planes de mejora de confiabilidad.
+
+- Un subconjunto reducido de camiones concentra una proporción importante de las **horas de detención**. Focalizar acciones sobre esos equipos (revisiones específicas, cambios de estrategia de mantenimiento, análisis detallado de causas) puede generar una mejora relevante en la disponibilidad global.
+
+- El análisis de **Pareto de causas de falla** muestra que unas pocas causas raíz (por ejemplo, fugas hidráulicas y sobrecalentamiento de motor) explican la mayor parte de las horas de paro. Esto permite priorizar recursos en esos modos de falla antes de dispersarse en causas menores.
+
+- Los indicadores **MTBF** (tiempo medio entre fallas) y **MTTR** (tiempo medio de reparación) por equipo entregan una base cuantitativa para:
+  - Comparar el comportamiento entre camiones.
+  - Medir el efecto de iniciativas futuras (reducción de tiempos de reparación, ajustes a la mantención preventiva, cambios de repuestos, etc.).
+
 
 ## 6. Relevancia para un rol de Performance & Analytics en minería
 
