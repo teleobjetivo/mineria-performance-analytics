@@ -1,0 +1,61 @@
+ticket_id,fecha_creacion,fecha_cierre,categoria,prioridad,estado,asignado_a,canal,sla_vencido
+T-0001,2025-01-30,,VPN,Alta,En curso,Analista 2,Portal,No
+T-0002,2025-01-01,2025-01-09,Correo,Alta,Cerrado,Analista 2,Correo,Sí
+T-0003,2025-01-06,2025-01-14,Impresora,Media,Resuelto,Analista 2,Correo,No
+T-0004,2025-01-31,2025-02-01,Red,Alta,Resuelto,Analista 1,Portal,No
+T-0005,2025-01-23,2025-01-30,VPN,Baja,Resuelto,Analista 4,Teléfono,No
+T-0006,2025-01-07,2025-01-13,Red,Baja,Resuelto,Analista 4,Correo,No
+T-0007,2025-02-25,,Correo,Media,En curso,Analista 3,Teléfono,Sí
+T-0008,2025-01-01,2025-01-09,Accesos,Alta,Cerrado,Analista 3,Correo,Sí
+T-0009,2025-01-17,,Correo,Media,En curso,Analista 3,Correo,No
+T-0010,2025-01-14,,Aplicación interna,Crítica,En curso,Analista 4,Correo,No
+T-0011,2025-02-16,,Impresora,Crítica,Abierto,Analista 4,Portal,No
+T-0012,2025-02-25,2025-03-04,VPN,Crítica,Cerrado,Analista 2,Portal,Sí
+T-0013,2025-02-25,2025-03-03,Red,Alta,Resuelto,Analista 1,Correo,Sí
+T-0014,2025-01-17,,Aplicación interna,Baja,En curso,Analista 1,Teléfono,No
+T-0015,2025-01-10,2025-01-14,Aplicación interna,Alta,Resuelto,Analista 2,Correo,Sí
+T-0016,2025-02-13,,VPN,Alta,En curso,Analista 1,Teléfono,Sí
+T-0017,2025-01-29,2025-02-04,Red,Baja,Resuelto,Analista 4,Teléfono,No
+T-0018,2025-02-22,2025-02-25,Impresora,Crítica,Cerrado,Analista 2,Teléfono,Sí
+T-0019,2025-01-14,,SAP,Baja,Abierto,Analista 4,Portal,Sí
+T-0020,2025-02-09,,Aplicación interna,Media,Abierto,Analista 3,Portal,No
+T-0021,2025-01-15,2025-01-22,Red,Baja,Cerrado,Analista 4,Portal,No
+T-0022,2025-02-24,2025-03-04,Accesos,Baja,Resuelto,Analista 3,Teléfono,No
+T-0023,2025-02-24,2025-03-02,Impresora,Crítica,Cerrado,Analista 1,Correo,Sí
+T-0024,2025-02-03,,VPN,Crítica,Abierto,Analista 4,Correo,Sí
+T-0025,2025-01-12,,Impresora,Crítica,En curso,Analista 3,Teléfono,Sí
+T-0026,2025-02-24,2025-03-03,Aplicación interna,Alta,Resuelto,Analista 4,Portal,Sí
+T-0027,2025-02-28,,SAP,Alta,En curso,Analista 2,Teléfono,No
+T-0028,2025-01-24,2025-01-27,Aplicación interna,Media,Cerrado,Analista 3,Portal,No
+T-0029,2025-01-17,,Accesos,Alta,Abierto,Analista 4,Teléfono,No
+T-0030,2025-02-13,,Impresora,Crítica,En curso,Analista 2,Correo,Sí
+T-0031,2025-01-02,,VPN,Alta,Abierto,Analista 2,Teléfono,No
+T-0032,2025-01-17,2025-01-17,Red,Media,Cerrado,Analista 4,Correo,No
+T-0033,2025-01-07,,Correo,Media,Abierto,Analista 2,Teléfono,Sí
+T-0034,2025-01-29,2025-01-31,SAP,Alta,Cerrado,Analista 1,Teléfono,No
+T-0035,2025-02-12,2025-02-15,Red,Media,Resuelto,Analista 3,Teléfono,No
+T-0036,2025-01-22,,Correo,Alta,Abierto,Analista 1,Teléfono,Sí
+T-0037,2025-01-20,2025-01-26,Accesos,Media,Cerrado,Analista 3,Teléfono,No
+T-0038,2025-01-13,2025-01-20,Correo,Crítica,Resuelto,Analista 4,Correo,Sí
+T-0039,2025-01-27,2025-02-01,Correo,Alta,Resuelto,Analista 3,Portal,Sí
+T-0040,2025-02-13,2025-02-14,VPN,Crítica,Resuelto,Analista 3,Teléfono,No
+T-0041,2025-02-28,,Aplicación interna,Media,Abierto,Analista 1,Teléfono,Sí
+T-0042,2025-02-19,2025-02-23,Impresora,Baja,Cerrado,Analista 3,Correo,No
+T-0043,2025-02-13,,Accesos,Baja,Abierto,Analista 2,Portal,No
+T-0044,2025-03-01,2025-03-06,Red,Media,Resuelto,Analista 3,Teléfono,No
+T-0045,2025-01-05,2025-01-13,Correo,Alta,Cerrado,Analista 4,Portal,Sí
+T-0046,2025-01-18,,VPN,Media,En curso,Analista 2,Correo,Sí
+T-0047,2025-02-11,2025-02-19,Correo,Media,Cerrado,Analista 3,Teléfono,No
+T-0048,2025-01-14,,Aplicación interna,Crítica,En curso,Analista 4,Teléfono,Sí
+T-0049,2025-01-10,2025-01-11,Red,Media,Resuelto,Analista 4,Correo,No
+T-0050,2025-01-25,2025-01-29,Aplicación interna,Media,Resuelto,Analista 3,Teléfono,No
+T-0051,2025-01-01,,Correo,Baja,En curso,Analista 4,Portal,No
+T-0052,2025-01-10,2025-01-17,Accesos,Media,Cerrado,Analista 2,Correo,No
+T-0053,2025-02-08,,Red,Media,Abierto,Analista 3,Portal,No
+T-0054,2025-01-08,2025-01-10,Red,Media,Cerrado,Analista 4,Portal,No
+T-0055,2025-01-15,2025-01-21,Correo,Media,Resuelto,Analista 2,Teléfono,No
+T-0056,2025-02-12,2025-02-20,SAP,Crítica,Cerrado,Analista 2,Teléfono,Sí
+T-0057,2025-02-10,,Impresora,Baja,En curso,Analista 3,Correo,Sí
+T-0058,2025-02-19,,Impresora,Crítica,En curso,Analista 2,Portal,No
+T-0059,2025-02-13,2025-02-16,SAP,Crítica,Resuelto,Analista 3,Teléfono,Sí
+T-0060,2025-01-30,,Impresora,Alta,Abierto,Analista 3,Correo,No
