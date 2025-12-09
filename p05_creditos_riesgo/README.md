@@ -115,7 +115,7 @@ no tradicional**, mostrando versatilidad en el uso de datos.
 1. Clonar el repositorio:
 
    ```bash
-   git clone https://github.com/teleobjetivo/mineria-performance-analytics.git
+   git clone https://github.com/teleobjetivo/....git
    cd mineria-performance-analytics
    ```
 
@@ -151,7 +151,7 @@ Exploro, investigo y construyo soluciones. Mi enfoque une el método científico
 - ✉️ **Email**: [teleobjetivo.boutique@gmail.com](mailto:teleobjetivo.boutique@gmail.com)  
 - 🌐 **Web**: [www.teleobjetivo.cl](https://www.teleobjetivo.cl)  
 - 📷 **Instagram**: [@tele.objetivo](https://www.instagram.com/tele.objetivo)  
-- 💻 **GitHub (Portafolio)**: [teleobjetivo/mineria-performance-analytics](https://github.com/teleobjetivo/portfolio-data-analytics)
+- 💻 **GitHub (Portafolio)**: [teleobjetivo/mineria-performance-analytics](https://github.com/teleobjetivo/analytics-tech-portfolio)
 
 ---
 
