@@ -93,3 +93,32 @@ Este proyecto ilustra la capacidad para:
 - Presentar resultados de manera clara y accionable, listos para ser llevados a dashboards en herramientas como **Power BI** u otras plataformas corporativas.
 
 En un entorno real, la misma lógica se puede conectar a fuentes de datos productivas, integrarse con rutinas de reporte y alimentar procesos de mejora continua (PDCA) en mantenimiento y confiabilidad.
+
+## About Me — Hugo Baghetti Calderón
+
+Ingeniero en Informática y Magíster en Gestión TI, con más de 15 años liderando proyectos de tecnología, analítica y transformación digital. Mi trabajo combina estrategia, ciencia de datos y operación real de negocio, integrando capacidades técnicas con visión ejecutiva.
+
+Me especializo en estructurar y escalar procesos de análisis basados en datos, generar valor desde la observación —desde la operación minera hasta la investigación astronómica— y traducir métricas complejas en decisiones claras. He trabajado en arquitectura de datos, integración de sistemas, automatización, gestión de plataformas TI y habilitación de equipos técnicos.
+
+Exploro, investigo y construyo soluciones. Mi enfoque une el método científico, la ingeniería y la narrativa visual; desde modelos analíticos hasta proyectos de cielo profundo. Creo en el uso inteligente de la información, en la rigurosidad técnica y en la elegancia de las soluciones simples que funcionan.
+
+---
+
+## 👤 About Me – Hugo Baghetti Calderón
+
+Ingeniero en Informática y Magíster en Gestión TI, con más de 15 años liderando proyectos de tecnología, analítica y transformación digital. Mi trabajo combina estrategia, ciencia de datos y operación real de negocio, integrando capacidades técnicas con visión ejecutiva.
+
+Me especializo en estructurar y escalar procesos de análisis basados en datos, generar valor desde la observación —desde la operación minera hasta la investigación astronómica— y traducir métricas complejas en decisiones claras. He trabajado en arquitectura de datos, integración de sistemas, automatización, gestión de plataformas TI y habilitación de equipos técnicos.
+
+Exploro, investigo y construyo soluciones. Mi enfoque une el método científico, la ingeniería y la narrativa visual; desde modelos analíticos hasta proyectos de cielo profundo. Creo en el uso inteligente de la información, en la rigurosidad técnica y en la elegancia de las soluciones simples que funcionan.
+
+---
+
+### 🔗 Contacto & Presencia Online
+
+- ✉️ **Email**: [teleobjetivo.boutique@gmail.com](mailto:teleobjetivo.boutique@gmail.com)  
+- 🌐 **Web**: [www.teleobjetivo.cl](https://www.teleobjetivo.cl)  
+- 📷 **Instagram**: [@tele.objetivo](https://www.instagram.com/tele.objetivo)  
+- 💻 **GitHub (Portafolio)**: [teleobjetivo/mineria-performance-analytics](https://github.com/teleobjetivo/portfolio-data-analytics)
+
+---

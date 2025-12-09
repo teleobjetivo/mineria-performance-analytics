@@ -1,88 +1,79 @@
-# Portafolio – Performance & Analytics en Minería
 
-Este repositorio reúne 3 proyectos orientados a demostrar capacidades de **análisis de datos, modelamiento y visualización** aplicadas al contexto minero, con foco en mantenimiento, desempeño de activos y mejora continua.
+# Portafolio de Analítica & Tecnología  
+## Minería · Retail · TI · Ciencia · Automatización
 
-Los proyectos están implementados en **Python (pandas, Jupyter Notebooks)** y utilizan datos simulados estructurados de forma similar a extracciones típicas de **SAP PM / ERP**.  
-La idea es que la lógica y los indicadores puedan llevarse fácilmente a herramientas como **Power BI** u otras plataformas corporativas.
+## Introducción
+Este portafolio reúne una selección de proyectos diseñados para demostrar capacidad técnica, pensamiento analítico, diseño de soluciones y claridad ejecutiva. Los proyectos están construidos con datasets simulados, metodologías replicables y notebooks ejecutables, manteniendo estándares profesionales en estructura, interpretación y documentación.
 
----
-
-## P01 – Salud de Activos: Camiones de Extracción
-
-**Carpeta:** `p01_salud_activos_camiones/`  
-
-**Objetivo:** analizar la disponibilidad, MTBF, MTTR y principales causas de falla de una flota de camiones CAEX en una faena minera ficticia (“Faena Atacama Norte”).
-
-**Tecnologías:**
-
-- Python, pandas, matplotlib
-- Jupyter Notebook
-
-**Entregables:**
-
-- Datos: `data/camiones_mina_mantenimiento.csv`
-- Notebook: `notebooks/p01_analisis_salud_activos.ipynb`
-- Imágenes: `img/`
-  - `disponibilidad_promedio_por_equipo.png`
-  - `horas_paro_total_por_equipo.png`
-  - `top_causas_falla.png`
-- Documentación: `README.md`
+Cada proyecto aborda un problema distinto —desde la salud de activos mineros hasta modelos de riesgo, herramientas de soporte TI y análisis científico— mostrando versatilidad y profundidad en el tratamiento de datos, narrativa analítica y pragmatismo ingenieril.
 
 ---
 
-## P02 – Backlog de Mantenimiento: Priorización de Órdenes de Trabajo
+# 🧭 Índice del Portafolio
 
-**Carpeta:** `p02_backlog_mantenimiento/`  
+## **Minería**
+1. **P01 – Salud de Activos en Camiones de Extracción**
+2. **P02 – Backlog de Mantenimiento y Priorización Operativa**
+3. **P03 – Fallas en Correas Transportadoras**
 
-**Objetivo:** analizar el **backlog de órdenes de trabajo** de mantenimiento y construir un **score de prioridad** que combine criticidad, antigüedad y estado de las OT, facilitando la planificación y la mejora continua (enfoque PDCA).
+## **Retail & Finanzas**
+4. **P05 – Segmentación de Riesgo en Créditos Retail**
 
-**Tecnologías:**
+## **Tecnologías de Soporte & Servicios**
+5. **P04 – Priorización Inteligente de Tickets TI**
 
-- Python, pandas, matplotlib
-- Jupyter Notebook
-
-**Entregables:**
-
-- Datos: `data/backlog_ordenes_trabajo.csv`
-- Notebook: `notebooks/p02_analisis_backlog.ipynb`
-- Imágenes: `img/`
-  - `backlog_por_criticidad.png`
-  - `distribucion_dias_backlog.png`
-  - `score_vs_dias_backlog.png`
-- Documentación: `README.md`
+## **Ciencia & Astrofotografía**
+6. **P06 – Score de Calidad de Noche de Observación (Cielo Profundo)**
 
 ---
 
-## P03 – Fallas en Correas Transportadoras
+# 🧩 Contenido del repositorio
+Cada proyecto incluye:
 
-**Carpeta:** `p03_fallas_correas/`  
-
-**Objetivo:** analizar fallas en **correas transportadoras** para identificar correas, tramos y causas críticas, y simular un **escenario de mejora** donde se reduce el impacto de la causa principal en horas de paro y toneladas no producidas.
-
-**Tecnologías:**
-
-- Python, pandas, matplotlib
-- Jupyter Notebook
-
-**Entregables:**
-
-- Datos: `data/fallas_correas_transportadoras.csv`
-- Notebook: `notebooks/p03_analisis_fallas_correas.ipynb`
-- Imágenes: `img/`
-  - `horas_paro_por_correa.png`
-  - `impacto_produccion_por_correa.png`
-  - `top_causas_falla_correas.png`
-- Documentación: `README.md`
+- **Dataset simulado (.csv)**
+- **Notebook ejecutable (.ipynb)**
+- **Gráficos generados automáticamente**
+- **Interpretación ejecutiva de KPIs**
+- **Conclusiones accionables**
+- **README propio por proyecto**
 
 ---
 
-## Cómo ejecutar
+# 🛠 Tecnologías utilizadas
+- Python 3.10  
+- Pandas · NumPy  
+- Matplotlib  
+- Jupyter Notebook  
+- Git & GitHub  
 
-1. Clonar el repositorio.
-2. Crear entorno virtual (opcional pero recomendado):
+---
 
-   ```bash
-   python3 -m venv .venv
-   source .venv/bin/activate
-   pip install -r requirements.txt
-# mineria-performance-analytics
+# 👤 About Me – Hugo Baghetti Calderón
+Ingeniero en Informática y Magíster en Gestión TI, con más de 15 años liderando proyectos de tecnología, analítica y transformación digital. Mi trabajo combina estrategia, ciencia de datos y operación real de negocio, integrando capacidades técnicas con visión ejecutiva.
+
+Me especializo en estructurar y escalar procesos de análisis basados en datos, generar valor desde la observación —desde la operación minera hasta la investigación astronómica— y traducir métricas complejas en decisiones claras. He trabajado en arquitectura de datos, integración de sistemas, automatización, gestión de plataformas TI y habilitación de equipos técnicos.
+
+Exploro, investigo y construyo soluciones. Mi enfoque une el método científico, la ingeniería y la narrativa visual; desde modelos analíticos hasta proyectos de cielo profundo. Creo en el uso inteligente de la información, en la rigurosidad técnica y en la elegancia de las soluciones simples que funcionan.
+
+
+## 👤 About Me – Hugo Baghetti Calderón
+
+Ingeniero en Informática y Magíster en Gestión TI, con más de 15 años liderando proyectos de tecnología, analítica y transformación digital. Mi trabajo combina estrategia, ciencia de datos y operación real de negocio, integrando capacidades técnicas con visión ejecutiva.
+
+Me especializo en estructurar y escalar procesos de análisis basados en datos, generar valor desde la observación —desde la operación minera hasta la investigación astronómica— y traducir métricas complejas en decisiones claras. He trabajado en arquitectura de datos, integración de sistemas, automatización, gestión de plataformas TI y habilitación de equipos técnicos.
+
+Exploro, investigo y construyo soluciones. Mi enfoque une el método científico, la ingeniería y la narrativa visual; desde modelos analíticos hasta proyectos de cielo profundo. Creo en el uso inteligente de la información, en la rigurosidad técnica y en la elegancia de las soluciones simples que funcionan.
+
+---
+
+### 🔗 Contacto & Presencia Online
+
+- ✉️ **Email**: [teleobjetivo.boutique@gmail.com](mailto:teleobjetivo.boutique@gmail.com)  
+- 🌐 **Web**: [www.teleobjetivo.cl](https://www.teleobjetivo.cl)  
+- 📷 **Instagram**: [@tele.objetivo](https://www.instagram.com/tele.objetivo)  
+- 💻 **GitHub (Portafolio)**: [teleobjetivo/mineria-performance-analytics](https://github.com/teleobjetivo/portfolio-data-analytics)
+
+---
+
+# 📌 Licencia
+Uso libre para fines de aprendizaje, demostración y extensión técnica.
