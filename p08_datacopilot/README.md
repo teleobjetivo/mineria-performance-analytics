@@ -1,145 +1,135 @@
+# P08 – DataCopilot Auto‑Analyst
 
-# P08 – DataCopilot Auto-Analyst
-**Explorador Automático de Datasets con Reporte Inteligente**
+Herramienta ligera en Python que actúa como un “copiloto de datos”:  
+lee un archivo CSV cualquiera, calcula estadísticas clave y genera un **informe automático en Markdown** con:
 
-DataCopilot es un analista automático en Python que toma un archivo CSV, inspecciona su estructura, calcula métricas clave, detecta outliers y genera un informe Markdown listo para compartir.
+- resumen de columnas,
+- métricas descriptivas básicas,
+- detección simple de valores faltantes,
+- distribución de variables numéricas,
+- comentarios interpretativos.
 
-No entrena modelos complejos: se enfoca en **entender el dataset** rápidamente y producir un resumen limpio y accionable, ideal para:
-- exploración inicial de datos de negocio,
-- soporte a analistas y equipos TI,
-- clases de Data Science y demostraciones técnicas.
-
----
-
-## 🎯 Objetivo
-
-Demostrar capacidad de:
-- diseñar y construir herramientas internas de analítica,
-- automatizar EDA (Exploratory Data Analysis),
-- generar insights reproducibles,
-- trabajar con datos heterogéneos sin depender de una UI gráfica.
-
-Es un proyecto ligero, pero con mentalidad de **producto interno**: algo que un equipo real podría usar a diario para partir cualquier análisis.
+La idea es mostrar cómo **automatizar el análisis exploratorio inicial (EDA)** de forma reproducible y reutilizable, sin depender de notebooks gigantes ni de herramientas externas.
 
 ---
 
-## 🧱 Arquitectura del Proyecto
+## 🎯 Objetivo del proyecto
 
-```text
+Este proyecto responde a un escenario muy concreto:
+
+> “Llega un CSV nuevo (minería, retail, banca, TI, etc.) y necesito una **mirada rápida e inteligente** sin perder tiempo armando gráficos a mano.”
+
+**DataCopilot** permite:
+
+1. Entregar un informe base consistente para cualquier dataset tabular.
+2. Estandarizar la primera capa de análisis para equipos de datos.
+3. Demostrar criterio analítico y automatización sin caer en complejidad innecesaria.
+
+---
+
+## 🧱 Estructura del proyecto
+
+```bash
 p08_datacopilot/
-│── data/
-│     └── demo_sales.csv
-│── img/
-│     └── hist_amount.png              # se genera tras la ejecución
-│── reports/
-│     └── auto_report.md               # informe automático en Markdown
-│── datacopilot.py                     # núcleo de la herramienta
-│── README.md
+├── data/
+│   └── ejemplo_dataset.csv        # CSV de muestra (puede ser reemplazado)
+├── reports/
+│   └── reporte_datacopilot.md     # Informe generado automáticamente
+├── notebooks/
+│   └── p08_datacopilot_demo.ipynb # Demo interactiva opcional
+└── src/
+    └── datacopilot.py             # Núcleo de la lógica del “auto‑analyst”
 ```
 
 ---
 
-## ⚙️ Setup rápido
+## ⚙️ Cómo usar DataCopilot
 
-Desde la raíz del repositorio:
+> Ejemplo asumiendo que estás en la carpeta raíz del portafolio  
+> (`/Users/hugobaghetti/Desktop/PROYECTOS/Proyecto Mineria`)
+
+### 1️⃣ Activar entorno virtual
 
 ```bash
-source .venv/bin/activate        # si no está activo ya
-python setup_p08_datacopilot.py  # se ejecuta una sola vez
+cd "/Users/hugobaghetti/Desktop/PROYECTOS/Proyecto Mineria"
+source .venv/bin/activate
 ```
 
-Esto crea la carpeta `p08_datacopilot/`, el CSV de ejemplo y el script principal `datacopilot.py`.
-
----
-
-## ▶️ Uso básico
-
-### 1. Usar el dataset de ejemplo
+### 2️⃣ Ejecutar el análisis automático sobre el dataset de ejemplo
 
 ```bash
-cd p08_datacopilot
-python datacopilot.py
+python p08_datacopilot/src/datacopilot.py     --input "p08_datacopilot/data/ejemplo_dataset.csv"     --output "p08_datacopilot/reports/reporte_datacopilot.md"
 ```
 
-El script:
+Si todo va bien, verás un mensaje indicando la ruta del informe generado.
 
-- carga `data/demo_sales.csv`,
-- analiza columnas, tipos y datos faltantes,
-- calcula métricas para columnas numéricas,
-- detecta outliers por columna (regla 1.5 IQR),
-- genera un histograma de la métrica principal (`amount`),
-- escribe un informe en `reports/auto_report.md`.
+### 3️⃣ Abrir el informe
 
-### 2. Usar cualquier otro CSV
+- Desde Finder, navega a:
+  - `p08_datacopilot/reports/reporte_datacopilot.md`
+- O desde terminal:
 
 ```bash
-cd p08_datacopilot
-python datacopilot.py /ruta/a/tu_archivo.csv
+open p08_datacopilot/reports/reporte_datacopilot.md
 ```
 
-Requisitos mínimos del CSV:
-- tener encabezados en la primera fila;
-- idealmente mezclar columnas numéricas y categóricas.
+---
+
+## 🧪 Probar con tu propio dataset
+
+Puedes reutilizar DataCopilot para cualquier CSV con formato tabular razonable:
+
+```bash
+python p08_datacopilot/src/datacopilot.py     --input "RUTA/A/TU_ARCHIVO.csv"     --output "p08_datacopilot/reports/reporte_mi_dataset.md"
+```
+
+Recomendaciones:
+
+- Que el CSV tenga encabezado en la primera fila.
+- Separador estándar (`,` o `;`).
+- Usar UTF‑8 para evitar problemas de caracteres.
 
 ---
 
-## 📊 ¿Qué contiene el informe?
+## 🔍 Qué hace exactamente DataCopilot
 
-El archivo `reports/auto_report.md` incluye:
+A nivel técnico, el script:
 
-1. **Resumen estructural**
-   - filas, columnas,
-   - listado de columnas y tipos.
-
-2. **Porcentaje de datos faltantes por columna**  
-   Permite detectar dónde hay problemas de calidad.
-
-3. **Métricas numéricas (describe)**  
-   - `count`, `mean`, `std`, `min`, `25%`, `50%`, `75%`, `max`.
-
-4. **Detección simple de outliers (regla 1.5 IQR)**  
-   - cantidad de outliers potenciales por columna numérica.
-
-5. **Insight automático en lenguaje natural**  
-   - tamaño del dataset,
-   - salud de datos faltantes,
-   - columnas con outliers,
-   - lectura rápida de la métrica principal (`amount` si existe).
-
-6. **Referencia a la visualización principal**  
-   - histograma de la columna principal generada en `img/`.
+1. Carga el dataset con **pandas**.
+2. Identifica columnas numéricas y categóricas.
+3. Calcula para columnas numéricas:
+   - count, mean, std, min, max, quartiles.
+4. Cuenta valores nulos y su porcentaje por columna.
+5. Revisa número de categorías distintas en las columnas tipo “object”.
+6. Genera un **reporte en Markdown** con secciones como:
+   - Información general del dataset,
+   - Tabla de resumen numérico,
+   - Tabla de valores faltantes,
+   - Comentarios interpretativos básicos.
 
 ---
 
-## 💡 Extensiones posibles
+## 🧩 Casos de uso
 
-Este proyecto está diseñado para poder crecer fácilmente hacia:
-
-- incorporación de scoring de calidad de dataset,
-- generación de reportes en HTML o PDF,
-- integración con notebooks Jupyter,
-- ejecución como servicio batch (por ejemplo, en un cron),
-- incorporación de modelos ligeros (regresiones simples o clustering).
-
----
-
-## 👤 About Me — Hugo Baghetti Calderón
-
-Ingeniero en Informática y Magíster en Gestión TI, con más de 15 años liderando proyectos de tecnología, analítica y transformación digital. Mi trabajo combina estrategia, ciencia de datos y operación real de negocio, integrando capacidades técnicas con visión ejecutiva.
-
-Exploro, investigo y construyo soluciones. Creo en el uso inteligente de la información, en la rigurosidad técnica y en la elegancia de las soluciones simples que funcionan.
+- Primer screening de datasets de:
+  - minería,
+  - mantenimiento,
+  - retail,
+  - finanzas,
+  - tickets TI,
+  - o incluso astrofotografía (catálogos de objetos, condiciones de cielo, etc.).
+- Herramienta interna de equipo para unificar el “primer vistazo” a los datos.
+- Demostración de criterio analítico + automatización en entrevistas técnicas.
 
 ---
 
-## 🔗 Contacto Profesional
+## 👤 Sobre el autor
 
-- 📧 **Email:** teleobjetivo.boutique@gmail.com  
-- 🌐 **Sitio Web:** https://www.teleobjetivo.cl  
-- 📸 **Instagram:** https://www.instagram.com/tele.objetivo  
-- 💻 **GitHub (Portafolio):** https://github.com/teleobjetivo/analytics-tech-portfolio  
+**Hugo Baghetti Calderón**  
+Ingeniero en Informática y Magíster en Gestión TI, con más de 15 años liderando proyectos de tecnología, analítica y transformación digital.  
+Exploro, investigo y construyo soluciones que combinan datos, operación y narrativa visual; desde la gran minería hasta la astrofotografía de cielo profundo.
 
----
-
-## 📄 Licencia
-
-MIT License — libre uso educativo y profesional.
+- 📧 Email: [teleobjetivo.boutique@gmail.com](mailto:teleobjetivo.boutique@gmail.com)  
+- 🌐 Web: [www.teleobjetivo.cl](https://www.teleobjetivo.cl)  
+- 📸 Instagram: [@tele.objetivo](https://www.instagram.com/tele.objetivo)  
+- 💻 GitHub Portafolio: [analytics-tech-portfolio](https://github.com/teleobjetivo/analytics-tech-portfolio)
