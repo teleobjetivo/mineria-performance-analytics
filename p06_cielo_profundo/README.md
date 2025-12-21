@@ -1,195 +1,140 @@
-# P06 – Score de calidad de noche para cielo profundo
+# P06 — Score de Calidad de Noche para Cielo Profundo (Astrofotografía)
 
-## 1. Contexto
+_Modelo simple para priorizar noches observables usando variables físicas._
 
-Este mini–proyecto simula el problema real de **elegir las mejores noches para observación de cielo profundo**, combinando varias variables atmosféricas y de contaminación lumínica en un **score único de calidad de noche**.
+## Resumen
 
-Aunque está orientado a astrofotografía, la lógica es exactamente la misma que en un rol de *Performance & Analytics*:
+Soy Hugo Baghetti. Este proyecto prioriza noches para astrofotografía de cielo profundo construyendo un score (0–100) a partir de variables típicas: oscuridad, seeing, nubosidad, humedad y fase lunar.
 
-- Partir de **múltiples señales** (seeing, nubes, humedad, fase lunar, oscuridad del cielo).
-- Normalizarlas a una escala comparable.
-- Definir un **modelo simple y explicable** para priorizar oportunidades (en este caso, las mejores noches).
+## Por qué hice este proyecto
 
-## 2. Objetivo del proyecto
+Planificar salidas astronómicas sin un criterio cuantitativo es perder tiempo y combustible. Yo quería una regla clara para escoger 'las mejores noches' y, de paso, demostrar que el mismo patrón se aplica a problemas corporativos: priorización de activos, riesgos, iniciativas o mantenimiento.
 
-Construir un **score de 0 a 100** que mida la calidad de una noche para observar y fotografiar objetos de cielo profundo, a partir de:
+## Qué demuestra (en trabajo real)
 
-- Oscuridad del cielo (SQM).
-- Seeing atmosférico (arcsec).
-- Porcentaje de nubes.
-- Humedad relativa.
-- Fase lunar.
+- Normalización y ponderación de variables para un score interpretable.
+- Ranking (top‑N) y visualización para decisión.
+- Capacidad de traducir señales físicas a un indicador operativo (sin complicar innecesariamente).
 
-El resultado final permite:
+## Estructura del proyecto
 
-- Listar las **mejores noches** ordenadas por potencial de observación.
-- Visualizar de forma rápida el ranking mediante un gráfico de barras.
-- Dejar trazado un enfoque reproducible y fácil de explicar en entrevistas técnicas.
-
-## 3. Datos de entrada
-
-Archivo: `data/condiciones_cielo.csv`
-
-Columnas principales (simuladas con valores realistas):
-
------------------------------------------------------------------------------------------------------------------
-| Columna               | Tipo      | Descripción                                                               |
-|-----------------------|-----------|---------------------------------------------------------------------------|
-| `fecha`               | string    | Fecha de la medición (YYYY-MM-DD).                                        |
-| `ubicacion`           | string    | Sitio de observación (ej. “Valle del Elqui”, “Santiago”).                 |
-| `sqm_mag`             | float     | Brillo del cielo en mag/arcsec² (mayor valor = cielo más oscuro).         |
-| `seeing_arcsec`       | float     | Seeing atmosférico en arcsec (menor valor = estrellas más puntuales).     |
-| `nubes_pct`           | float     | Porcentaje de nubosidad (0–100).                                          |
-| `humedad_pct`         | float     | Porcentaje de humedad relativa (0–100).                                   |
-| `fase_lunar_pct`      | float     | Porcentaje de fase lunar (0 = Luna nueva, 100 = Luna llena).              |
-| `apto_cielo_profundo` | bool/int  | Etiqueta orientativa (1 = noche razonable para cielo profundo, 0 = no).   |
------------------------------------------------------------------------------------------------------------------
-
-> Nota: Los datos son **sintéticos**, pero con rangos y combinaciones coherentes con condiciones típicas de observación en Chile.
-
-## 4. Lógica del score de calidad
-
-En el notebook `notebooks/p06_analisis_cielo_profundo.ipynb` se construye una métrica `score_calidad_noche` en escala 0–100 combinando cinco factores:
-
-1. **Oscuridad del cielo (`sqm_mag`)**  
-   - Rango típico acotado: 18 a 21.8 mag/arcsec².  
-   - Cuanto más alto el SQM, más oscuro el cielo.  
-   - Se normaliza a \[0, 1\] con:
-     - 18 → 0 (cielo muy contaminado).
-     - 21.8 → 1 (cielo muy oscuro).
-
-2. **Seeing (`seeing_arcsec`)**  
-   - Rango acotado: 0.7 a 3.0 arcsec.
-   - Menor valor = mejor estabilidad atmosférica.
-   - Se transforma a \[0, 1\] donde 0.7 arcsec ≈ 1 (mejor) y 3.0 arcsec ≈ 0 (peor).
-
-3. **Nubes (`nubes_pct`)**  
-   - 0% nubes = 1 (óptimo).  
-   - 100% nubes = 0 (inútil para cielo profundo).
-
-4. **Humedad (`humedad_pct`)**  
-   - 0% humedad = 1 (ideal).  
-   - 100% humedad = 0 (muy mala para transparencia y rocío).
-
-5. **Fase lunar (`fase_lunar_pct`)**  
-   - 0% (Luna nueva) = 1.  
-   - 100% (Luna llena) = 0.  
-   - Especialmente importante para objetos de bajo contraste (nebulosas, galaxias).
-
-Estos factores se combinan en un score ponderado:
-
-- 0.30 · oscuridad del cielo (SQM)  
-- 0.25 · seeing  
-- 0.20 · nubes  
-- 0.15 · fase lunar  
-- 0.10 · humedad  
-
-Por último, el score se escala a 0–100 y se redondea a un decimal:
-
-```python
-df2["score_calidad_noche"] = (score * 100).round(1).clip(0, 100)
+```text
+p06_cielo_profundo/
+├── data/
+│   └── (dataset de condiciones nocturnas)
+├── notebooks/
+│   └── p06_analisis_cielo_profundo.ipynb
+├── img/
+│   └── score_calidad_noche_top.png
+└── README.md
 ```
 
-El resultado es una nueva columna que permite ordenar todas las noches de mejor a peor calidad para cielo profundo.
+## Qué hace cada archivo
 
-## 5. Salidas principales
+- `notebooks/p06_analisis_cielo_profundo.ipynb`: cálculo del score y ranking.
+- `img/score_calidad_noche_top.png`: gráfico de las mejores noches.
+- `data/`: dataset de ejemplo con variables meteorológicas/astronómicas (estructura documentada en el notebook).
 
-1. **Dataset enriquecido en memoria**  
-   - `df2` contiene la columna adicional `score_calidad_noche`.
+## Instalación
 
-2. **Top de noches recomendadas**  
-   - Se construye una tabla con las mejores noches según el score:
+> Asumo un entorno virtual `.venv` creado en la raíz del portafolio.
 
-   ```python
-   TOP_N = 10
-   top_n = (
-       df2
-       .sort_values("score_calidad_noche", ascending=False)
-       .head(TOP_N)
-       .reset_index(drop=True)
-   )
-   ```
+```bash
+cd <repository-root>
+python -m venv .venv
+source .venv/bin/activate  # Linux/macOS
+# .venv\Scripts\activate  # Windows
+pip install -U pip
+pip install pandas numpy matplotlib jupyter
+```
 
-   Esta tabla incluye:
-   - fecha,
-   - ubicación,
-   - sqm_mag,
-   - seeing_arcsec,
-   - nubes_pct,
-   - humedad_pct,
-   - fase_lunar_pct,
-   - score_calidad_noche.
+Si el proyecto usa otros paquetes, los indico en su sección de ejecución.
 
-3. **Gráfico de ranking de noches**  
-   - Se genera y guarda un gráfico de barras en:
+## Ejecución
 
-     ```text
-     img/score_calidad_noche_top.png
-     ```
+```bash
+cd <repository-root>
+source .venv/bin/activate  # Linux/macOS
+# .venv\Scripts\activate  # Windows
+cd p06_cielo_profundo
+jupyter notebook
+```
 
-   - El gráfico muestra, en el eje X, `fecha – ubicación`, y en el eje Y el `score_calidad_noche` (0–100).
-   - Sirve como **visualización rápida** para explicar cómo se priorizan las noches “estrella”.
+Ejecutar:
+- `notebooks/p06_analisis_cielo_profundo.ipynb`
 
-## 6. Cómo ejecutar el proyecto localmente
+## Entradas y salidas
 
-Desde la raíz del repositorio (por ejemplo `Proyecto Mineria`):
+- **Entrada**: dataset en `data/` con variables de condiciones.
+- **Salida**: ranking top‑N en el notebook y figura `img/score_calidad_noche_top.png`.
 
-1. Activar el entorno virtual (si no está activo):
+## Metodología (resumen técnico)
 
-   ```bash
-   cd "/Users/hugobaghetti/Desktop/PROYECTOS/Proyecto Mineria"
-   source .venv/bin/activate
-   ```
+- Normalización de variables (para compararlas en una escala común).
+- Definición de pesos (ponderación) según impacto en observación.
+- Score final 0–100 y ranking descendente.
+- Export visual simple para reportar las mejores noches.
 
-2. Abrir el notebook de P06:
+## Resultados esperables / cómo interpretar
 
-   - En VS Code, abrir la carpeta del proyecto.
-   - Ir a: `p06_cielo_profundo/notebooks/p06_analisis_cielo_profundo.ipynb`.
-   - Seleccionar el kernel asociado al entorno `.venv`.
+Resultado práctico: un top‑N de noches con mayor probabilidad de sesión exitosa. En contexto laboral, es un ejemplo claro de cómo construir un score explicable con múltiples variables (multi‑criteria scoring).
 
-3. Ejecutar todas las celdas del notebook.
+## Notas y referencias técnicas
 
-Al finalizar, deberías ver:
+- Multi‑criteria scoring (normalización + ponderación).
+- Variables típicas de calidad de cielo: seeing, nubes, humedad, fase lunar, oscuridad.
 
-- La tabla con las mejores noches (`top_n`).
-- El gráfico de barras guardado en `p06_cielo_profundo/img/score_calidad_noche_top.png`.
+## Contacto & Presencia Online
 
-## 7. Cómo explicar este proyecto en una entrevista
+- Email: teleobjetivo.boutique@gmail.com
+- Web: www.teleobjetivo.cl
+- Instagram: @tele.objetivo
+- GitHub: https://github.com/teleobjetivo
 
-Algunas frases que se pueden usar para presentar P06 en contexto profesional:
-
-- “Construí un score de calidad de noche combinando cinco variables físicas (oscuridad, seeing, nubes, humedad y fase lunar), normalizadas y ponderadas en una escala de 0 a 100.”
-- “El objetivo es priorizar las mejores noches para observación de cielo profundo, pero el enfoque es exactamente el mismo que usaría para priorizar activos, riesgos o iniciativas de mantenimiento.”
-- “El modelo es deliberadamente simple y explicable: se puede ajustar el peso de cada factor según el criterio del negocio o de los expertos.”
-- “Dejo trazado un flujo reproducible en Python: lectura del dataset, normalización de variables, cálculo de score y visualización final para soporte de decisiones.”
-
-## 8. Posibles extensiones futuras
-
-Algunas mejoras que se podrían implementar sobre esta base para las proximas versiones:
-
-- Ajustar automáticamente los pesos del score usando feedback histórico (noches ‘buenas’ reales).  
-- Incorporar restricciones logísticas (distancia al sitio, disponibilidad de equipo, etc.).  
-- Integrar datos reales de estaciones meteorológicas o APIs astronómicas para automatizar la generación del ranking de noches.
+**Rol**: University Lecturer (Data & Analytics) · Science Communicator · Research Collaborator
 
 ---
 
+## Related Work (Author)
 
-## 👤 About Me – Hugo Baghetti Calderón
-
-Ingeniero en Informática y Magíster en Gestión TI, con más de 15 años liderando proyectos de tecnología, analítica y transformación digital. Mi trabajo combina estrategia, ciencia de datos y operación real de negocio, integrando capacidades técnicas con visión ejecutiva.
-
-Me especializo en estructurar y escalar procesos de análisis basados en datos, generar valor desde la observación —desde la operación minera hasta la investigación astronómica— y traducir métricas complejas en decisiones claras. He trabajado en arquitectura de datos, integración de sistemas, automatización, gestión de plataformas TI y habilitación de equipos técnicos.
-
-Exploro, investigo y construyo soluciones. Mi enfoque une el método científico, la ingeniería y la narrativa visual; desde modelos analíticos hasta proyectos de cielo profundo. Creo en el uso inteligente de la información, en la rigurosidad técnica y en la elegancia de las soluciones simples que funcionan.
-
----
-
-### 🔗 Contacto & Presencia Online
-
-- ✉️ **Email**: [teleobjetivo.boutique@gmail.com](mailto:teleobjetivo.boutique@gmail.com)  
-- 🌐 **Web**: [www.teleobjetivo.cl](https://www.teleobjetivo.cl)  
-- 📷 **Instagram**: [@tele.objetivo](https://www.instagram.com/tele.objetivo)  
-- 💻 **GitHub (Portafolio)**: [teleobjetivo/analytics-tech-portfolio](https://github.com/teleobjetivo/analytics-tech-portfolio)
+- P01 — Asset Health Analytics for Mining Operations  
+- P02 — Maintenance Backlog Prioritization  
+- P03 — Failure Pattern Analysis for Conveyor Systems  
+- P04 — IT Support Ticket Scoring  
+- P05 — Credit Risk Segmentation  
+- P06 — Multi-Criteria Scoring for Astrophotography Planning  
+- P07 — Scientific Data Pipelines (ALMA-inspired)  
+- P08 — Automated Exploratory Data Analysis (DataCopilot)  
+- P09 — Static Executive KPI Dashboards  
+- P10 — Analytics Readiness Framework  
 
 ---
 
+---
+
+## Technical References & Background
+
+1. Han, J., Kamber, M., & Pei, J. (2012). *Data Mining: Concepts and Techniques*. Morgan Kaufmann.
+2. Provost, F., & Fawcett, T. (2013). *Data Science for Business*. O’Reilly Media.
+3. CRISP-DM 1.0 — Cross-Industry Standard Process for Data Mining.
+4. ISO/IEC 25010 — Systems and Software Quality Models.
+5. Basel Committee on Banking Supervision. *Principles for the Management of Credit Risk*.
+
+---
+
+---
+
+## Author & Professional Profile
+
+**Hugo Baghetti**  
+Applied Analytics Researcher & Scientific Communicator  
+
+**Areas:** Data Analytics · Decision Support Systems · Applied AI · Data Engineering  
+
+**Contact**
+- Email: teleobjetivo.boutique@gmail.com  
+- Web: https://www.teleobjetivo.cl  
+- GitHub: https://github.com/teleobjetivo  
+- Instagram (visual science communication): https://www.instagram.com/tele.objetivo  
+
+---

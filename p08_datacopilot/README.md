@@ -1,135 +1,137 @@
-# P08 – DataCopilot Auto‑Analyst
+# P08 — DataCopilot (Auto‑Analyst para CSV)
 
-Herramienta ligera en Python que actúa como un “copiloto de datos”:  
-lee un archivo CSV cualquiera, calcula estadísticas clave y genera un **informe automático en Markdown** con:
+_EDA automático y generación de reportes en Markdown._
 
-- resumen de columnas,
-- métricas descriptivas básicas,
-- detección simple de valores faltantes,
-- distribución de variables numéricas,
-- comentarios interpretativos.
+## Resumen
 
-La idea es mostrar cómo **automatizar el análisis exploratorio inicial (EDA)** de forma reproducible y reutilizable, sin depender de notebooks gigantes ni de herramientas externas.
+Soy Hugo Baghetti. DataCopilot es un script liviano en Python que toma un CSV, calcula estadísticas y genera un reporte en Markdown con un primer diagnóstico: columnas, nulos, distribuciones básicas y comentarios interpretativos.
 
----
+## Por qué hice este proyecto
 
-## 🎯 Objetivo del proyecto
+En equipos de datos, el cuello de botella inicial se repite: llega un CSV y se pierde tiempo en abrir notebooks y hacer lo mismo. Yo quería estandarizar ese primer vistazo con un reporte reproducible, versionable y fácil de compartir.
 
-Este proyecto responde a un escenario muy concreto:
+## Qué demuestra (en trabajo real)
 
-> “Llega un CSV nuevo (minería, retail, banca, TI, etc.) y necesito una **mirada rápida e inteligente** sin perder tiempo armando gráficos a mano.”
+- Automatización de EDA (sin notebooks gigantes).
+- Producción de un artefacto portable (Markdown) útil para documentación y handoff.
+- Enfoque reutilizable: funciona con datasets de minería, banca, TI, retail, etc.
 
-**DataCopilot** permite:
+## Estructura del proyecto
 
-1. Entregar un informe base consistente para cualquier dataset tabular.
-2. Estandarizar la primera capa de análisis para equipos de datos.
-3. Demostrar criterio analítico y automatización sin caer en complejidad innecesaria.
-
----
-
-## 🧱 Estructura del proyecto
-
-```bash
+```text
 p08_datacopilot/
 ├── data/
-│   └── ejemplo_dataset.csv        # CSV de muestra (puede ser reemplazado)
+│   └── ejemplo_dataset.csv
 ├── reports/
-│   └── reporte_datacopilot.md     # Informe generado automáticamente
+│   └── reporte_datacopilot.md
 ├── notebooks/
-│   └── p08_datacopilot_demo.ipynb # Demo interactiva opcional
+│   └── p08_datacopilot_demo.ipynb
 └── src/
-    └── datacopilot.py             # Núcleo de la lógica del “auto‑analyst”
+    └── datacopilot.py
 ```
 
----
+## Qué hace cada archivo
 
-## ⚙️ Cómo usar DataCopilot
+- `src/datacopilot.py`: CLI que ejecuta el análisis y genera el reporte.
+- `data/ejemplo_dataset.csv`: dataset de ejemplo.
+- `reports/`: salida de reportes Markdown.
+- `notebooks/p08_datacopilot_demo.ipynb`: demo opcional.
 
-> Ejemplo asumiendo que estás en la carpeta raíz del portafolio  
-> (`/Users/hugobaghetti/Desktop/PROYECTOS/Proyecto Mineria`)
-
-### 1️⃣ Activar entorno virtual
+## Instalación
 
 ```bash
-cd "/Users/hugobaghetti/Desktop/PROYECTOS/Proyecto Mineria"
-source .venv/bin/activate
+cd <repository-root>
+source .venv/bin/activate  # Linux/macOS
+# .venv\Scripts\activate  # Windows
+pip install pandas
 ```
 
-### 2️⃣ Ejecutar el análisis automático sobre el dataset de ejemplo
+## Ejecución
 
 ```bash
-python p08_datacopilot/src/datacopilot.py     --input "p08_datacopilot/data/ejemplo_dataset.csv"     --output "p08_datacopilot/reports/reporte_datacopilot.md"
+cd <repository-root>
+source .venv/bin/activate  # Linux/macOS
+# .venv\Scripts\activate  # Windows
+
+python p08_datacopilot/src/datacopilot.py   --input "p08_datacopilot/data/ejemplo_dataset.csv"   --output "p08_datacopilot/reports/reporte_datacopilot.md"
 ```
 
-Si todo va bien, verás un mensaje indicando la ruta del informe generado.
+## Entradas y salidas
 
-### 3️⃣ Abrir el informe
+- **Entrada**: cualquier CSV tabular con encabezados.
+- **Salida**: un archivo Markdown con:
+  - resumen general del dataset,
+  - estadísticas numéricas,
+  - valores faltantes,
+  - cardinalidad de categóricas,
+  - comentarios base.
 
-- Desde Finder, navega a:
-  - `p08_datacopilot/reports/reporte_datacopilot.md`
-- O desde terminal:
+## Metodología (resumen técnico)
 
-```bash
-open p08_datacopilot/reports/reporte_datacopilot.md
-```
+- Identificación de columnas numéricas/categóricas.
+- `describe()` para numéricas + conteos de nulos.
+- Generación de Markdown estructurado para documentación.
 
----
+## Resultados esperables / cómo interpretar
 
-## 🧪 Probar con tu propio dataset
+Resultado práctico: un reporte base coherente para cualquier dataset. Útil para triage, handoff, QA inicial y para iniciar un análisis más profundo con criterios.
 
-Puedes reutilizar DataCopilot para cualquier CSV con formato tabular razonable:
+## Notas y referencias técnicas
 
-```bash
-python p08_datacopilot/src/datacopilot.py     --input "RUTA/A/TU_ARCHIVO.csv"     --output "p08_datacopilot/reports/reporte_mi_dataset.md"
-```
+- EDA reproducible como práctica de ingeniería de datos.
+- Reportes en Markdown como artefacto versionable en Git.
 
-Recomendaciones:
+## Contacto & Presencia Online
 
-- Que el CSV tenga encabezado en la primera fila.
-- Separador estándar (`,` o `;`).
-- Usar UTF‑8 para evitar problemas de caracteres.
+- Email: teleobjetivo.boutique@gmail.com
+- Web: www.teleobjetivo.cl
+- Instagram: @tele.objetivo
+- GitHub: https://github.com/teleobjetivo
 
----
-
-## 🔍 Qué hace exactamente DataCopilot
-
-A nivel técnico, el script:
-
-1. Carga el dataset con **pandas**.
-2. Identifica columnas numéricas y categóricas.
-3. Calcula para columnas numéricas:
-   - count, mean, std, min, max, quartiles.
-4. Cuenta valores nulos y su porcentaje por columna.
-5. Revisa número de categorías distintas en las columnas tipo “object”.
-6. Genera un **reporte en Markdown** con secciones como:
-   - Información general del dataset,
-   - Tabla de resumen numérico,
-   - Tabla de valores faltantes,
-   - Comentarios interpretativos básicos.
+**Rol**: University Lecturer (Data & Analytics) · Science Communicator · Research Collaborator
 
 ---
 
-## 🧩 Casos de uso
+## Related Work (Author)
 
-- Primer screening de datasets de:
-  - minería,
-  - mantenimiento,
-  - retail,
-  - finanzas,
-  - tickets TI,
-  - o incluso astrofotografía (catálogos de objetos, condiciones de cielo, etc.).
-- Herramienta interna de equipo para unificar el “primer vistazo” a los datos.
-- Demostración de criterio analítico + automatización en entrevistas técnicas.
+- P01 — Asset Health Analytics for Mining Operations  
+- P02 — Maintenance Backlog Prioritization  
+- P03 — Failure Pattern Analysis for Conveyor Systems  
+- P04 — IT Support Ticket Scoring  
+- P05 — Credit Risk Segmentation  
+- P06 — Multi-Criteria Scoring for Astrophotography Planning  
+- P07 — Scientific Data Pipelines (ALMA-inspired)  
+- P08 — Automated Exploratory Data Analysis (DataCopilot)  
+- P09 — Static Executive KPI Dashboards  
+- P10 — Analytics Readiness Framework  
 
 ---
 
-## 👤 Sobre el autor
+---
 
-**Hugo Baghetti Calderón**  
-Ingeniero en Informática y Magíster en Gestión TI, con más de 15 años liderando proyectos de tecnología, analítica y transformación digital.  
-Exploro, investigo y construyo soluciones que combinan datos, operación y narrativa visual; desde la gran minería hasta la astrofotografía de cielo profundo.
+## Technical References & Background
 
-- 📧 Email: [teleobjetivo.boutique@gmail.com](mailto:teleobjetivo.boutique@gmail.com)  
-- 🌐 Web: [www.teleobjetivo.cl](https://www.teleobjetivo.cl)  
-- 📸 Instagram: [@tele.objetivo](https://www.instagram.com/tele.objetivo)  
-- 💻 GitHub Portafolio: [analytics-tech-portfolio](https://github.com/teleobjetivo/analytics-tech-portfolio)
+1. Han, J., Kamber, M., & Pei, J. (2012). *Data Mining: Concepts and Techniques*. Morgan Kaufmann.
+2. Provost, F., & Fawcett, T. (2013). *Data Science for Business*. O’Reilly Media.
+3. CRISP-DM 1.0 — Cross-Industry Standard Process for Data Mining.
+4. ISO/IEC 25010 — Systems and Software Quality Models.
+5. Basel Committee on Banking Supervision. *Principles for the Management of Credit Risk*.
+
+---
+
+---
+
+## Author & Professional Profile
+
+**Hugo Baghetti**  
+Applied Analytics Researcher & Scientific Communicator  
+
+**Areas:** Data Analytics · Decision Support Systems · Applied AI · Data Engineering  
+
+**Contact**
+- Email: teleobjetivo.boutique@gmail.com  
+- Web: https://www.teleobjetivo.cl  
+- GitHub: https://github.com/teleobjetivo  
+- Instagram (visual science communication): https://www.instagram.com/tele.objetivo  
+
+---

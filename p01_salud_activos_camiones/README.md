@@ -1,124 +1,146 @@
-# Proyecto 01 – Salud de Activos: Camiones de Extracción
+# P01 — Salud de Activos (CAEX): Disponibilidad, MTBF y MTTR
 
-## 1. Contexto
+_Análisis reproducible de órdenes de trabajo estilo SAP PM para gestión de mantenimiento._
 
-Este proyecto simula el análisis de la **salud de una flota de camiones de extracción (CAEX)** en una faena minera ficticia (“Faena Atacama Norte”).  
-El objetivo es mostrar cómo, a partir de datos estructurados de forma similar a una extracción de **SAP PM**, se pueden construir indicadores de mantenimiento y visualizaciones que apoyen decisiones de desempeño y confiabilidad.
+## Resumen
 
-El análisis está implementado en **Python (pandas + matplotlib) sobre Jupyter Notebooks**, pensando en que la lógica sea fácilmente trasladable a herramientas como Power BI u otras plataformas de reporting corporativo.
+Soy Hugo Baghetti. En este proyecto simulo y analizo la salud de una flota de camiones de extracción (CAEX) en una faena ficticia. A partir de un dataset tabular (tipo extracción SAP PM), construyo indicadores operacionales y visualizaciones que permiten priorizar focos de mejora de confiabilidad.
 
-## 2. Preguntas de negocio
+## Por qué hice este proyecto
 
-El caso responde, entre otras, a las siguientes preguntas:
+En operaciones reales, la disponibilidad se pierde por pocas causas recurrentes y por un subconjunto de equipos. Quise demostrar una forma simple, auditable y portable de pasar de 'datos de OT' a decisiones: qué equipo duele más, qué causas explican el mayor impacto y cómo medir MTBF/MTTR para comparar y gestionar.
 
-- ¿Cuál es la **disponibilidad** de la flota por mes y por camión?
-- ¿Qué equipos concentran la mayor cantidad de **horas de detención**?
-- ¿Cuáles son las **principales causas de falla** (análisis de Pareto)?
-- ¿Cómo se comportan los indicadores **MTBF** (Mean Time Between Failures) y **MTTR** (Mean Time To Repair) por equipo?
+## Qué demuestra (en trabajo real)
 
-## 3. Datos utilizados
+- Modelado analítico a partir de eventos (OT) y cálculo de KPIs clásicos de mantenimiento.
+- Capacidad de estructurar un pipeline simple (carga → limpieza → agregación → métricas → visualización).
+- Enfoque explicable: resultados listos para convertirse en dashboard (Power BI/Looker/QuickSight) o rutina mensual.
 
-- Archivo principal: `data/camiones_mina_mantenimiento.csv`
-- Registros simulados de órdenes de trabajo de mantenimiento, con estructura compatible con un escenario típico de SAP PM:
+## Estructura del proyecto
 
-Campos clave:
+```text
+p01_salud_activos_camiones/
+├── data/
+│   └── camiones_mina_mantenimiento.csv
+├── notebooks/
+│   └── p01_analisis_salud_activos.ipynb
+├── img/
+│   └── (figuras exportadas por el notebook)
+└── README.md
+```
 
-- `id_ot`: identificador de la orden de trabajo.
-- `equipo`: código del camión (ej. CAEX-101, CAEX-102, …).
-- `fecha_inicio`, `fecha_termino`: marca de tiempo de la intervención.
-- `tipo_mantencion`: Preventiva / Correctiva.
-- `sistema`: Motor, Transmisión, Frenos, Eléctrico, Neumáticos, Hidráulico.
-- `causa_raiz`: descripción resumida de la causa de la intervención.
-- `horas_paro`: horas de detención asociadas a la OT.
-- `horas_trabajadas_periodo`: horas operadas por el camión en el periodo.
-- `criticidad_equipo`: Alta / Media / Baja.
-- `faena`: nombre de la faena ficticia.
-- `mes`: periodo de análisis (formato YYYY-MM).
+## Qué hace cada archivo
 
-Los datos cubren varios meses y múltiples equipos, permitiendo calcular indicadores por camión y por periodo.
+- `data/camiones_mina_mantenimiento.csv`: histórico simulado de OT con horas de paro, horas trabajadas, causa raíz, sistema, etc.
+- `notebooks/p01_analisis_salud_activos.ipynb`: notebook principal (cálculo de disponibilidad, MTBF/MTTR, Pareto y gráficos).
+- `img/`: salida de figuras para usar en reportes o presentaciones.
 
-## 4. Enfoque analítico
+## Instalación
 
-El análisis se desarrolla en el notebook:
+> Asumo un entorno virtual `.venv` creado en la raíz del portafolio.
 
+```bash
+cd <repository-root>
+python -m venv .venv
+source .venv/bin/activate  # Linux/macOS
+# .venv\Scripts\activate  # Windows
+pip install -U pip
+pip install pandas numpy matplotlib jupyter
+```
+
+Si el proyecto usa otros paquetes, los indico en su sección de ejecución.
+
+## Ejecución
+
+```bash
+cd <repository-root>
+source .venv/bin/activate  # Linux/macOS
+# .venv\Scripts\activate  # Windows
+cd p01_salud_activos_camiones
+
+# Abrir el notebook (VS Code o Jupyter)
+jupyter notebook
+```
+
+Luego ejecutar el notebook:
 - `notebooks/p01_analisis_salud_activos.ipynb`
 
-Los pasos principales son:
+## Entradas y salidas
 
-1. **Preparación de datos**
-   - Carga del CSV y conversión de campos de fecha/hora.
-   - Agrupación de la información por `equipo` y `mes`.
-   - Consolidación de horas de paro (`horas_paro_total`) y horas trabajadas (`horas_trab_periodo`).
+- **Entrada**: `data/camiones_mina_mantenimiento.csv`.
+- **Salidas**: tablas agregadas dentro del notebook y figuras en `img/` (por ejemplo: disponibilidad por equipo, horas de paro por equipo, Pareto por causa).
 
-2. **Cálculo de indicadores**
-   - **Horas disponibles** = horas trabajadas + horas de paro.
-   - **Disponibilidad** = horas trabajadas / horas disponibles.
-   - **Número de fallas** = cantidad de OT en el periodo.
-   - **MTTR** = horas de paro total / número de fallas.
-   - **MTBF** ≈ horas trabajadas / número de fallas.
+## Metodología (resumen técnico)
 
-3. **Análisis de causas de falla**
-   - Agrupación de horas de paro por `causa_raiz`.
-   - Construcción de un **Pareto de fallas**, calculando porcentaje y porcentaje acumulado para cada causa.
+- Conversión de fechas y normalización de campos.
+- Agregación por `equipo` y `mes`.
+- Definición de métricas: disponibilidad (horas trabajadas / horas disponibles), conteo de fallas, MTTR y MTBF.
+- Pareto por `causa_raiz` y visualizaciones para priorización.
 
-4. **Visualización**
-   - Gráficos de barras para:
-     - Disponibilidad promedio por equipo.
-     - Horas de paro totales por equipo.
-     - Top de causas de falla por horas de paro.
-   - Estos gráficos permiten identificar rápidamente equipos y modos de falla prioritarios.
+## Resultados esperables / cómo interpretar
 
-## 5. Resultados clave (ejemplo de interpretación)
+Lo esperable es identificar:
+- Equipos que concentran horas de paro y baja disponibilidad.
+- Un conjunto reducido de causas raíz que explican la mayor parte del impacto.
+- Diferencias claras MTBF/MTTR entre equipos (base para acciones: repuestos, planes PM, entrenamiento, rediseño).
 
-> Nota: Los valores específicos dependen del dataset simulado; aquí se muestra el tipo de conclusiones que se pueden obtener.
+## Notas y referencias técnicas
 
-- La **disponibilidad promedio de la flota** se mantiene en un rango razonable, pero se observan diferencias claras entre equipos: algunos camiones muestran disponibilidades cercanas al mínimo del conjunto, lo que los convierte en candidatos naturales para planes de mejora de confiabilidad.
+- KPIs clásicos de mantenimiento: Availability, MTBF, MTTR.
+- Principio de Pareto aplicado a fallas.
+- En entornos corporativos, este enfoque suele alimentarse desde SAP PM/Maximo u otras fuentes ERP/CMMS.
 
-- Un subconjunto reducido de camiones concentra una proporción importante de las **horas de detención**. Focalizar acciones sobre esos equipos (revisiones específicas, cambios de estrategia de mantenimiento, análisis detallado de causas) puede generar una mejora relevante en la disponibilidad global.
+## Contacto & Presencia Online
 
-- El análisis de **Pareto de causas de falla** muestra que unas pocas causas raíz (por ejemplo, fugas hidráulicas y sobrecalentamiento de motor) explican la mayor parte de las horas de paro. Esto permite priorizar recursos en esos modos de falla antes de dispersarse en causas menores.
+- Email: teleobjetivo.boutique@gmail.com
+- Web: www.teleobjetivo.cl
+- Instagram: @tele.objetivo
+- GitHub: https://github.com/teleobjetivo
 
-- Los indicadores **MTBF** (tiempo medio entre fallas) y **MTTR** (tiempo medio de reparación) por equipo entregan una base cuantitativa para:
-  - Comparar el comportamiento entre camiones.
-  - Medir el efecto de iniciativas futuras (reducción de tiempos de reparación, ajustes a la mantención preventiva, cambios de repuestos, etc.).
-
-
-## 6. Relevancia para un rol de Performance & Analytics en minería
-
-Este proyecto ilustra la capacidad para:
-
-- Diseñar y estructurar modelos de datos inspirados en información de **SAP PM / sistemas ERP**.
-- Calcular indicadores clave de mantenimiento (disponibilidad, MTBF, MTTR) a partir de registros de órdenes de trabajo.
-- Identificar oportunidades de mejora mediante análisis de Pareto y comparación entre equipos.
-- Presentar resultados de manera clara y accionable, listos para ser llevados a dashboards en herramientas como **Power BI** u otras plataformas corporativas.
-
-En un entorno real, la misma lógica se puede conectar a fuentes de datos productivas, integrarse con rutinas de reporte y alimentar procesos de mejora continua (PDCA) en mantenimiento y confiabilidad.
-
-## About Me — Hugo Baghetti Calderón
-
-Ingeniero en Informática y Magíster en Gestión TI, con más de 15 años liderando proyectos de tecnología, analítica y transformación digital. Mi trabajo combina estrategia, ciencia de datos y operación real de negocio, integrando capacidades técnicas con visión ejecutiva.
-
-Me especializo en estructurar y escalar procesos de análisis basados en datos, generar valor desde la observación —desde la operación minera hasta la investigación astronómica— y traducir métricas complejas en decisiones claras. He trabajado en arquitectura de datos, integración de sistemas, automatización, gestión de plataformas TI y habilitación de equipos técnicos.
-
-Exploro, investigo y construyo soluciones. Mi enfoque une el método científico, la ingeniería y la narrativa visual; desde modelos analíticos hasta proyectos de cielo profundo. Creo en el uso inteligente de la información, en la rigurosidad técnica y en la elegancia de las soluciones simples que funcionan.
+**Rol**: University Lecturer (Data & Analytics) · Science Communicator · Research Collaborator
 
 ---
 
-## 👤 About Me – Hugo Baghetti Calderón
+## Related Work (Author)
 
-Ingeniero en Informática y Magíster en Gestión TI, con más de 15 años liderando proyectos de tecnología, analítica y transformación digital. Mi trabajo combina estrategia, ciencia de datos y operación real de negocio, integrando capacidades técnicas con visión ejecutiva.
-
-Me especializo en estructurar y escalar procesos de análisis basados en datos, generar valor desde la observación —desde la operación minera hasta la investigación astronómica— y traducir métricas complejas en decisiones claras. He trabajado en arquitectura de datos, integración de sistemas, automatización, gestión de plataformas TI y habilitación de equipos técnicos.
-
-Exploro, investigo y construyo soluciones. Mi enfoque une el método científico, la ingeniería y la narrativa visual; desde modelos analíticos hasta proyectos de cielo profundo. Creo en el uso inteligente de la información, en la rigurosidad técnica y en la elegancia de las soluciones simples que funcionan.
+- P01 — Asset Health Analytics for Mining Operations  
+- P02 — Maintenance Backlog Prioritization  
+- P03 — Failure Pattern Analysis for Conveyor Systems  
+- P04 — IT Support Ticket Scoring  
+- P05 — Credit Risk Segmentation  
+- P06 — Multi-Criteria Scoring for Astrophotography Planning  
+- P07 — Scientific Data Pipelines (ALMA-inspired)  
+- P08 — Automated Exploratory Data Analysis (DataCopilot)  
+- P09 — Static Executive KPI Dashboards  
+- P10 — Analytics Readiness Framework  
 
 ---
 
-### 🔗 Contacto & Presencia Online
+---
 
-- ✉️ **Email**: [teleobjetivo.boutique@gmail.com](mailto:teleobjetivo.boutique@gmail.com)  
-- 🌐 **Web**: [www.teleobjetivo.cl](https://www.teleobjetivo.cl)  
-- 📷 **Instagram**: [@tele.objetivo](https://www.instagram.com/tele.objetivo)  
-- 💻 **GitHub (Portafolio)**: [teleobjetivo/analytics-tech-portfolio](https://github.com/teleobjetivo/analytics-tech-portfolio)
+## Technical References & Background
+
+1. Han, J., Kamber, M., & Pei, J. (2012). *Data Mining: Concepts and Techniques*. Morgan Kaufmann.
+2. Provost, F., & Fawcett, T. (2013). *Data Science for Business*. O’Reilly Media.
+3. CRISP-DM 1.0 — Cross-Industry Standard Process for Data Mining.
+4. ISO/IEC 25010 — Systems and Software Quality Models.
+5. Basel Committee on Banking Supervision. *Principles for the Management of Credit Risk*.
+
+---
+
+---
+
+## Author & Professional Profile
+
+**Hugo Baghetti**  
+Applied Analytics Researcher & Scientific Communicator  
+
+**Areas:** Data Analytics · Decision Support Systems · Applied AI · Data Engineering  
+
+**Contact**
+- Email: teleobjetivo.boutique@gmail.com  
+- Web: https://www.teleobjetivo.cl  
+- GitHub: https://github.com/teleobjetivo  
+- Instagram (visual science communication): https://www.instagram.com/tele.objetivo  
 
 ---

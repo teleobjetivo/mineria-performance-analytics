@@ -1,159 +1,157 @@
-# Portafolio – Performance & Analytics (Minería, Retail, Soporte TI y Astronomía)
+# P05 — Segmentación de Riesgo de Créditos (Scoring explicable)
 
-Este repositorio reúne una serie de **mini–proyectos de análisis de datos**
-orientados a roles de **Performance & Analytics / Data Analyst** en contextos
-de minería, banca retail, soporte TI y un caso de astronomía aplicado.
+_De un CSV operativo a un score y segmentos Bajo/Medio/Alto._
 
-Todos los ejemplos están construidos en **Python + Jupyter Notebooks**, con
-datasets simulados pero **realistas** y lógica de negocio explicable, pensada
-para discutir con equipos técnicos y no técnicos.
+## Resumen
 
----
+Soy Hugo Baghetti. Este proyecto toma un dataset de créditos de consumo simulado y construye una segmentación de riesgo explicable para apoyar decisiones como priorización de gestión, revisión de políticas o monitoreo de cartera.
 
-## Índice de proyectos
+## Por qué hice este proyecto
 
-### P01 – Salud de activos de camiones de extracción (Minería)
+En banca y retail financiero, muchas decisiones se toman con reglas (o modelos) que deben ser explicables: por qué un crédito entra en 'Alto' y cuál es el factor dominante. Quise demostrar un scoring simple pero realista, usando señales típicas: relación monto/ingreso, comportamiento de pago (mora) y variables de perfil.
 
-**Carpeta:** [`p01_salud_activos_camiones/`](./p01_salud_activos_camiones/README.md)  
+## Qué demuestra (en trabajo real)
 
-Analiza la **disponibilidad de la flota de camiones** en una operación minera:
+- Diseño de score auditable y portable (reglas claras, sin 'caja negra').
+- Feature engineering básico (ratios) y normalización.
+- Producción de salidas reutilizables: CSV enriquecido + gráfico para reporte.
 
-- Dataset de eventos de mantenimiento y horas de paro por equipo.
-- Cálculo de KPIs claves (disponibilidad, horas de detención, MTBF, MTTR).
-- Identificación de **equipos críticos** con mayor impacto en horas de paro.
-- Gráficos listos para usar en reportes o dashboards ejecutivos.
+## Estructura del proyecto
 
----
+```text
+p05_creditos_riesgo/
+├── data/
+│   ├── creditos_raw.csv
+│   └── creditos_riesgo_segmentado.csv
+├── notebooks/
+│   └── p05_riesgo_creditos.ipynb
+├── img/
+│   └── creditos_por_segmento_riesgo.png
+└── README.md
+```
 
-### P02 – Backlog de órdenes de trabajo de mantenimiento (Minería)
+## Qué hace cada archivo
 
-**Carpeta:** [`p02_backlog_mantenimiento/`](./p02_backlog_mantenimiento/README.md)  
+- `data/creditos_raw.csv`: dataset de entrada (créditos) con variables de cliente y producto.
+- `notebooks/p05_riesgo_creditos.ipynb`: notebook de scoring y segmentación.
+- `data/creditos_riesgo_segmentado.csv`: salida con features y scores (incluye `score_total` y `segmento_riesgo`).
+- `img/creditos_por_segmento_riesgo.png`: gráfico de distribución por segmento.
 
-Evalúa el **backlog de mantenimiento** para identificar riesgos operacionales:
+## Instalación
 
-- Dataset de órdenes de trabajo con criticidad, días de atraso y estado.
-- Construcción de un **score de riesgo del backlog**.
-- Distribución de órdenes por criticidad y días en atraso.
-- Base para discutir **priorización de mantenimiento** y mejora continua (PDCA).
+```bash
+cd <repository-root>
+python -m venv .venv
+source .venv/bin/activate  # Linux/macOS
+# .venv\Scripts\activate  # Windows
+pip install -U pip
+pip install pandas matplotlib jupyter
+```
 
----
+## Ejecución
 
-### P03 – Fallas en correas transportadoras (Minería)
+```bash
+cd <repository-root>
+source .venv/bin/activate  # Linux/macOS
+# .venv\Scripts\activate  # Windows
+cd p05_creditos_riesgo
+jupyter notebook
+```
 
-**Carpeta:** [`p03_fallas_correas/`](./p03_fallas_correas/README.md)  
+Ejecutar:
+- `notebooks/p05_riesgo_creditos.ipynb`
 
-Explora la **confiabilidad de correas transportadoras** en una planta minera:
+## Entradas y salidas
 
-- Dataset de fallas con horas de paro, causa raíz y correa afectada.
-- Identificación de correas con **mayor impacto en producción**.
-- Análisis de Pareto de causas de falla.
-- Soporte para decisiones de **plan de acción de confiabilidad**.
+- **Entrada**: `data/creditos_raw.csv` con columnas como: `monto_credito`, `ingreso_mensual`, `plazo_meses`, `tasa_interes_anual`, `segmento`, `region`, `estado`.
+- **Salidas**:
+  - `data/creditos_riesgo_segmentado.csv` con columnas adicionales: `ratio_monto_ingreso`, `score_mora`, `score_ratio`, `score_monto`, `score_buro_norm`, `score_total`, `segmento_riesgo`.
+  - `img/creditos_por_segmento_riesgo.png` con la distribución de segmentos.
 
----
+## Metodología (resumen técnico)
 
-### P04 – Priorización de tickets de soporte TI
+- Feature engineering: `ratio_monto_ingreso = monto_credito / ingreso_mensual`.
+- Scoring por componentes (ejemplo conceptual):
+  - **mora**: puntaje mayor si hay señales de atraso.
+  - **ratio**: puntaje mayor si el monto relativo al ingreso es alto.
+  - **monto**: puntaje por tramos del monto.
+  - **buro (normalizado)**: componente numérico adicional para robustez.
+- Suma de componentes → `score_total`.
+- Segmentación en tres niveles: Bajo / Medio / Alto (umbrales definidos en el notebook).
 
-**Carpeta:** [`p04_tickets_soporte/`](./p04_tickets_soporte/README.md)  
+## Resultados esperables / cómo interpretar
 
-Modelo sencillo para **priorizar tickets de soporte** según impacto y urgencia:
+En trabajo real, este tipo de segmentación sirve para:
+- priorizar gestión de cobranza y alertas,
+- reforzar políticas (por segmento, región o producto),
+- monitorear drift si el score se recalcula periódicamente,
+- alimentar un tablero simple para riesgo operacional/financiero.
 
-- Dataset de tickets con severidad, categoría, tiempos de resolución.
-- Construcción de un **score de priorización de tickets**.
-- Ranking de categorías con mayor “dolor” para el negocio.
-- Visualización del **score promedio por categoría**.
+Importante: aquí la intención es la **explicabilidad** y la trazabilidad del criterio, no competir con modelos de score crediticio comerciales.
 
-Este ejemplo calza bien con roles de **Soporte Tecnológico / Performance &
-Analytics** que deben traducir datos de operación TI en decisiones accionables.
+## Notas y referencias técnicas
 
----
+- Scoring rules-based: útil cuando se requiere auditoría y justificación.
+- Feature engineering con ratios (monto/ingreso) como proxy de carga financiera.
+- Segmentación ordinal (Bajo/Medio/Alto) para operación y comunicación ejecutiva.
 
-### P05 – Segmentación de riesgo de créditos retail
+## Próximos pasos
 
-**Carpeta:** [`p05_creditos_riesgo/`](./p05_creditos_riesgo/README.md)  
+- Agregar validación con holdout temporal y métricas (si existiera variable objetivo: mora real).
+- Sensibilidad de umbrales y pesos (análisis de impacto por política).
+- Exportar como función/CLI para recalcular score en batch.
 
-Simula una cartera de **créditos de consumo retail** y construye un
-**score de riesgo explicable**:
+## Contacto & Presencia Online
 
-- Dataset con monto, ingreso, historial de mora y score de buró simulado.
-- Cálculo de un **score_total** compuesto (mora, carga financiera, monto y buró).
-- Segmentación en **Bajo / Medio / Alto riesgo**.
-- CSV resultante listo para alimentar **Power BI, Excel o tableros internos**.
+- Email: teleobjetivo.boutique@gmail.com
+- Web: www.teleobjetivo.cl
+- Instagram: @tele.objetivo
+- GitHub: https://github.com/teleobjetivo
 
-Ejemplo útil para roles en **banca / riesgo retail / analytics**.
-
----
-
-### P06 – Condiciones de cielo para observación de cielo profundo
-
-**Carpeta:** [`p06_cielo_profundo/`](./p06_cielo_profundo/README.md)  
-
-Caso compacto inspirado en **astronomía / astrofotografía**:
-
-- Dataset con condiciones de cielo (seeing, transparencia, fase lunar, Bortle).
-- Score simple para **priorizar noches** según calidad de observación.
-- Base para discutir cómo integrar datos operacionales y de entorno
-  en decisiones de planificación (ej.: elección de ventana de observación).
-
-Este proyecto sirve como ejemplo de **aplicación de analítica a un dominio técnico
-no tradicional**, mostrando versatilidad en el uso de datos.
-
----
-
-## Tecnologías utilizadas
-
-- **Lenguaje:** Python (3.x)
-- **Entorno:** Jupyter Notebooks / VS Code
-- **Librerías principales:**
-  - `pandas` para manejo de datos
-  - `matplotlib` para visualizaciones simples
-- **Control de versiones:** Git + GitHub
-
----
-
-## Cómo ejecutar localmente
-
-1. Clonar el repositorio:
-
-   ```bash
-   git clone https://github.com/teleobjetivo/....git
-   cd mineria-performance-analytics
-   ```
-
-2. Crear y activar entorno virtual (opcional pero recomendado):
-
-   ```bash
-   python3 -m venv .venv
-   source .venv/bin/activate
-   ```
-
-3. Instalar dependencias mínimas:
-
-   ```bash
-   pip install pandas matplotlib jupyter
-   ```
-
-4. Abrir el proyecto en VS Code o Jupyter y ejecutar los notebooks dentro de
-   cada carpeta (`p05_.../notebooks`).
-
-
-## 👤 About Me – Hugo Baghetti Calderón
-
-Ingeniero en Informática y Magíster en Gestión TI, con más de 15 años liderando proyectos de tecnología, analítica y transformación digital. Mi trabajo combina estrategia, ciencia de datos y operación real de negocio, integrando capacidades técnicas con visión ejecutiva.
-
-Me especializo en estructurar y escalar procesos de análisis basados en datos, generar valor desde la observación —desde la operación minera hasta la investigación astronómica— y traducir métricas complejas en decisiones claras. He trabajado en arquitectura de datos, integración de sistemas, automatización, gestión de plataformas TI y habilitación de equipos técnicos.
-
-Exploro, investigo y construyo soluciones. Mi enfoque une el método científico, la ingeniería y la narrativa visual; desde modelos analíticos hasta proyectos de cielo profundo. Creo en el uso inteligente de la información, en la rigurosidad técnica y en la elegancia de las soluciones simples que funcionan.
+**Rol**: University Lecturer (Data & Analytics) · Science Communicator · Research Collaborator
 
 ---
 
-### 🔗 Contacto & Presencia Online
+## Related Work (Author)
 
-- ✉️ **Email**: [teleobjetivo.boutique@gmail.com](mailto:teleobjetivo.boutique@gmail.com)  
-- 🌐 **Web**: [www.teleobjetivo.cl](https://www.teleobjetivo.cl)  
-- 📷 **Instagram**: [@tele.objetivo](https://www.instagram.com/tele.objetivo)  
-- 💻 **GitHub (Portafolio)**: [teleobjetivo/analytics-tech-portfolio](https://github.com/teleobjetivo/analytics-tech-portfolio)
+- P01 — Asset Health Analytics for Mining Operations  
+- P02 — Maintenance Backlog Prioritization  
+- P03 — Failure Pattern Analysis for Conveyor Systems  
+- P04 — IT Support Ticket Scoring  
+- P05 — Credit Risk Segmentation  
+- P06 — Multi-Criteria Scoring for Astrophotography Planning  
+- P07 — Scientific Data Pipelines (ALMA-inspired)  
+- P08 — Automated Exploratory Data Analysis (DataCopilot)  
+- P09 — Static Executive KPI Dashboards  
+- P10 — Analytics Readiness Framework  
 
 ---
 
 ---
 
+## Technical References & Background
+
+1. Han, J., Kamber, M., & Pei, J. (2012). *Data Mining: Concepts and Techniques*. Morgan Kaufmann.
+2. Provost, F., & Fawcett, T. (2013). *Data Science for Business*. O’Reilly Media.
+3. CRISP-DM 1.0 — Cross-Industry Standard Process for Data Mining.
+4. ISO/IEC 25010 — Systems and Software Quality Models.
+5. Basel Committee on Banking Supervision. *Principles for the Management of Credit Risk*.
+
+---
+
+---
+
+## Author & Professional Profile
+
+**Hugo Baghetti**  
+Applied Analytics Researcher & Scientific Communicator  
+
+**Areas:** Data Analytics · Decision Support Systems · Applied AI · Data Engineering  
+
+**Contact**
+- Email: teleobjetivo.boutique@gmail.com  
+- Web: https://www.teleobjetivo.cl  
+- GitHub: https://github.com/teleobjetivo  
+- Instagram (visual science communication): https://www.instagram.com/tele.objetivo  
+
+---

@@ -1,120 +1,143 @@
-# P07 – ALMA Deep Sky Pipeline (from Chile)
-**Integración de Datos ALMA para Análisis Científico**
+# P07 — ALMA Deep‑Sky Data Pipeline (Chile)
 
-Este proyecto implementa un pipeline completo para la exploración y análisis preliminar de datos astronómicos provenientes del observatorio ALMA, con enfoque educativo y científico. El pipeline simula una ingestión real a través de la API oficial de ALMA, con fallback automático a un dataset didáctico cuando la API no responde, garantizando usabilidad incluso en contextos de conectividad limitada.
+_Ingesta (API + fallback), limpieza, visualización y métricas sobre datos astronómicos._
 
-Incluye extracción, catalogación, limpieza, visualización avanzada y una propuesta de integración educativa para cursos de *Data Science*, *Sistemas Distribuidos* y *Computación Científica*.
+## Resumen
 
----
+Soy Hugo Baghetti. En este proyecto implemento un pipeline educativo para explorar datos científicos asociados a ALMA. El flujo intenta consumir una API pública y, si no está disponible, cae a un dataset didáctico para mantener reproducibilidad.
 
-## 📡 Motivación Personal
+## Por qué hice este proyecto
 
-Desarrollado desde Chile, país que alberga los cielos más limpios del planeta y la infraestructura astronómica más avanzada del hemisferio sur.  
-Como astrofotógrafo (Nikon D7500 + William Optics RedCat 51 MK2.5 + ZWO ASI533MC Pro + Sky-Watcher GTi), entiendo la importancia del cielo profundo y la captura de señales reales desde el desierto de Atacama.
+Necesitaba un ejemplo que uniera ingeniería (pipeline) con ciencia aplicada, sin depender de infraestructura pesada. El valor es doble: (1) mostrar diseño modular y robusto, (2) entregar un recurso de docencia que funcione online/offline.
 
-Este pipeline nace como puente entre mi trabajo fotográfico, el ecosistema ALMA y la formación de estudiantes que necesitan herramientas científicas accesibles.
+## Qué demuestra (en trabajo real)
 
----
+- Diseño modular (ingesta → estandarización → limpieza → visualización → métricas).
+- Manejo de fallas (fallback) y reproducibilidad.
+- Capacidad de llevar datos científicos a un formato analítico estándar.
 
-## 🧭 Objetivos del Proyecto
+## Estructura del proyecto
 
-1. **Simular una ingesta científica real desde ALMA**  
-2. **Estandarizar catálogos y observaciones en un formato analítico**  
-3. **Visualizar mapas, bandas y espectros básicos**  
-4. **Crear una base para pipelines más complejos (ML, clasificación, detección de líneas)**  
-5. **Entregar un recurso educativo robusto offline/online**
-
----
-
-## 🧬 Arquitectura del Pipeline
-
-```
-fetch_alma_data.py  →  ingest.py  →  clean.py  →  plot_maps.py  →  metrics.py
-```
-
-Cada módulo cumple un rol:
-
-- **fetch_alma_data.py**  
-  Intenta descargar observaciones de ALMA vía API pública.  
-  Si falla → genera un dataset pequeño, limpio y reproducible.
-
-- **ingest.py**  
-  Prepara las columnas y el formato unificado.
-
-- **clean.py**  
-  Aplica filtros de calidad y normalización de valores astrofísicos.
-
-- **plot_maps.py**  
-  Produce gráficos de distribución, intensidad y exploración básica del cielo profundo.
-
-- **metrics.py**  
-  Genera métricas resumidas del catálogo observado.
-
----
-
-## 📁 Estructura del proyecto
-
-```
+```text
 p07_alma_pipeline/
-│── data/
-│     ├── alma_sample.csv
-│── plots/
-│── p07_alma_pipeline/
-│     ├── fetch_alma_data.py
-│     ├── ingest.py
-│     ├── clean.py
-│     ├── plot_maps.py
-│     ├── metrics.py
-│── README.md
+├── data/
+│   └── alma_sample.csv
+├── plots/
+│   └── (salidas gráficas)
+├── p07_alma_pipeline/
+│   ├── fetch_alma_data.py
+│   ├── ingest.py
+│   ├── clean.py
+│   ├── plot_maps.py
+│   └── metrics.py
+└── README.md
 ```
 
----
+## Qué hace cada archivo
 
-## ▶️ Ejecución rápida (5 minutos)
+- `fetch_alma_data.py`: descarga desde API; si falla, genera/usa un dataset reproducible.
+- `ingest.py`: unifica esquema/columnas y prepara dataset analítico.
+- `clean.py`: filtros de calidad y normalización.
+- `plot_maps.py`: visualizaciones exploratorias.
+- `metrics.py`: métricas resumidas del catálogo.
+- `data/alma_sample.csv`: dataset de ejemplo.
+- `plots/`: imágenes de salida.
+
+## Instalación
 
 ```bash
-cd p07_alma_pipeline
-python p07_alma_pipeline/fetch_alma_data.py
-python p07_alma_pipeline/ingest.py
-python p07_alma_pipeline/clean.py
-python p07_alma_pipeline/plot_maps.py
-python p07_alma_pipeline/metrics.py
+cd <repository-root>
+source .venv/bin/activate  # Linux/macOS
+# .venv\Scripts\activate  # Windows
+pip install pandas matplotlib requests
 ```
 
+## Ejecución
+
+```bash
+cd <repository-root>
+source .venv/bin/activate  # Linux/macOS
+# .venv\Scripts\activate  # Windows
+
+# Ejecutar pipeline (módulos)
+python p07_alma_pipeline/p07_alma_pipeline/fetch_alma_data.py
+python p07_alma_pipeline/p07_alma_pipeline/ingest.py
+python p07_alma_pipeline/p07_alma_pipeline/clean.py
+python p07_alma_pipeline/p07_alma_pipeline/plot_maps.py
+python p07_alma_pipeline/p07_alma_pipeline/metrics.py
+```
+
+## Entradas y salidas
+
+- **Entradas**: API pública (si está disponible) o `data/alma_sample.csv`.
+- **Salidas**: dataset limpio (según módulos) y figuras en `plots/`.
+
+## Metodología (resumen técnico)
+
+- Arquitectura por etapas (cada módulo hace una cosa y lo hace bien).
+- Fallback para garantizar ejecución reproducible.
+- Visualización exploratoria y métricas de catálogo como capa inicial para análisis posterior (ML, clasificación, etc.).
+
+## Resultados esperables / cómo interpretar
+
+Este proyecto está pensado como base. Lo más importante es el diseño: modular, reproducible y listo para extender.
+
+## Notas y referencias técnicas
+
+- Pipelines científicos: trazabilidad y reproducibilidad.
+- Patrón de 'fallback dataset' para docencia y demostraciones técnicas sin dependencia de servicios externos.
+
+## Contacto & Presencia Online
+
+- Email: teleobjetivo.boutique@gmail.com
+- Web: www.teleobjetivo.cl
+- Instagram: @tele.objetivo
+- GitHub: https://github.com/teleobjetivo
+
+**Rol**: University Lecturer (Data & Analytics) · Science Communicator · Research Collaborator
+
 ---
 
-## 🌌 Resultados esperados
+## Related Work (Author)
 
-- Catálogo estandarizado de observaciones ALMA  
-- Gráficos reproductibles  
-- Métricas para análisis científico  
-- Pipeline listo para agregar:  
-  ✓ Machine Learning  
-  ✓ Integración con FITS  
-  ✓ Mapas avanzados con CARTA y APLpy  
-
----
-
-## 👤 About Me — Hugo Baghetti Calderón
-
-Ingeniero en Informática y Magíster en Gestión TI, con más de 15 años liderando proyectos de tecnología, analítica y transformación digital.  
-Mi trabajo combina estrategia, ciencia de datos y operación real; integro visión ejecutiva con ejecución técnica rigurosa.
-
-Exploro, investigo y construyo soluciones.  
-Creo en la elegancia de los sistemas simples que funcionan, en el uso inteligente de la información y en la narrativa visual como herramienta científica.
+- P01 — Asset Health Analytics for Mining Operations  
+- P02 — Maintenance Backlog Prioritization  
+- P03 — Failure Pattern Analysis for Conveyor Systems  
+- P04 — IT Support Ticket Scoring  
+- P05 — Credit Risk Segmentation  
+- P06 — Multi-Criteria Scoring for Astrophotography Planning  
+- P07 — Scientific Data Pipelines (ALMA-inspired)  
+- P08 — Automated Exploratory Data Analysis (DataCopilot)  
+- P09 — Static Executive KPI Dashboards  
+- P10 — Analytics Readiness Framework  
 
 ---
 
-## 🔗 Contacto Profesional
+---
 
-- 📧 **Email:** teleobjetivo.boutique@gmail.com  
-- 🌐 **Sitio Web:** https://www.teleobjetivo.cl  
-- 📸 **Instagram:** https://www.instagram.com/tele.objetivo  
-- 💻 **GitHub (Portafolio):** https://github.com/teleobjetivo/analytics-tech-portfolio  
+## Technical References & Background
+
+1. Han, J., Kamber, M., & Pei, J. (2012). *Data Mining: Concepts and Techniques*. Morgan Kaufmann.
+2. Provost, F., & Fawcett, T. (2013). *Data Science for Business*. O’Reilly Media.
+3. CRISP-DM 1.0 — Cross-Industry Standard Process for Data Mining.
+4. ISO/IEC 25010 — Systems and Software Quality Models.
+5. Basel Committee on Banking Supervision. *Principles for the Management of Credit Risk*.
 
 ---
 
-## 📄 Licencia
+---
 
-MIT License — libre uso educativo y profesional.
+## Author & Professional Profile
 
+**Hugo Baghetti**  
+Applied Analytics Researcher & Scientific Communicator  
+
+**Areas:** Data Analytics · Decision Support Systems · Applied AI · Data Engineering  
+
+**Contact**
+- Email: teleobjetivo.boutique@gmail.com  
+- Web: https://www.teleobjetivo.cl  
+- GitHub: https://github.com/teleobjetivo  
+- Instagram (visual science communication): https://www.instagram.com/tele.objetivo  
+
+---

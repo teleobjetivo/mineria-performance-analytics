@@ -1,217 +1,147 @@
-# P04 – Prioridad de tickets de soporte TI
+# P04 — Priorización de Tickets de Soporte TI (Score Operacional)
 
-Este proyecto simula una **mesa de ayuda de TI** (tipo Jira / Service Desk) y construye un
-**score de prioridad** para apoyar la decisión de “qué ticket atender primero”.
+_Reglas simples, auditable y listo para Excel/Power BI._
 
-La idea es mostrar, de forma simple y transparente, cómo a partir de datos operacionales
-(tickets, fechas, SLA) se puede construir una lógica de priorización clara, explicable y
-reproducible.
+## Resumen
 
----
+Soy Hugo Baghetti. En este proyecto transformo un listado de tickets de soporte en una cola priorizada, usando un score compuesto (prioridad base, SLA, días abiertos, estado). El objetivo es formalizar criterios que normalmente viven 'en la cabeza' del equipo.
 
-## 1. Estructura del proyecto
+## Por qué hice este proyecto
+
+En soporte, la fricción típica es siempre la misma: se atiende por urgencia percibida y no por riesgo. Yo necesitaba un mecanismo explicable para ordenar el trabajo, minimizar incumplimientos de SLA y visualizar dónde está el dolor.
+
+## Qué demuestra (en trabajo real)
+
+- Modelado de reglas de negocio en scoring explicable.
+- Generación de artefactos operacionales (CSV priorizado) para integración rápida.
+- Visualización para gestión: identificar categorías con mayor score promedio.
+
+## Estructura del proyecto
 
 ```text
 p04_tickets_soporte/
 ├── data/
-│   ├── tickets_soporte_raw.csv        # datos simulados de tickets
-│   └── tickets_priorizados.csv        # salida con score y orden de prioridad
+│   ├── tickets_soporte_demo.csv
+│   └── tickets_priorizados.csv
+├── notebooks/
+│   └── p04_priorizacion_tickets.ipynb
 ├── img/
 │   └── score_promedio_por_categoria.png
-├── notebooks/
-│   └── p04_priorizacion_tickets.ipynb # notebook principal de análisis
 └── README.md
 ```
 
----
+## Qué hace cada archivo
 
-## 2. Dataset simulado
+- `data/tickets_soporte_demo.csv`: dataset de entrada (tickets).
+- `notebooks/p04_priorizacion_tickets.ipynb`: notebook que calcula los scores y genera salidas.
+- `data/tickets_priorizados.csv`: salida con columnas de scoring.
+- `img/score_promedio_por_categoria.png`: figura de gestión.
 
-El archivo `data/tickets_soporte_raw.csv` contiene, entre otras, las siguientes columnas:
+## Instalación
 
-- `ticket_id`: identificador único del ticket (ej.: `T-0001`).
-- `fecha_creacion`: fecha de creación del ticket.
-- `fecha_cierre`: fecha de cierre (vacío si el ticket sigue abierto).
-- `categoria`: tipo de incidente (Correo, VPN, SAP, Red, etc.).
-- `prioridad`: prioridad declarada (Baja, Media, Alta, Crítica).
-- `estado`: estado del ticket (Abierto, En curso, Resuelto, Cerrado).
-- `asignado_a`: analista responsable.
-- `canal`: canal de ingreso (Portal, Correo, Teléfono).
-- `sla_vencido`: indicador de si el ticket incumplió el SLA (Sí/No).
+> Asumo un entorno virtual `.venv` creado en la raíz del portafolio.
 
-Estos datos están **simulados**, pero respetan patrones realistas de una mesa de ayuda:
-distintas categorías, prioridades mezcladas, tickets abiertos/cerrados y algunos SLA
-vencidos.
-
----
-
-## 3. Lógica de negocio: score de prioridad
-
-En el notebook `notebooks/p04_priorizacion_tickets.ipynb` se construye un **score_total**
-para cada ticket a partir de reglas explícitas. La lógica se basa en cuatro componentes:
-
-### 3.1 Prioridad declarada (`score_prioridad_base`)
-
-```text
-Baja    → 1 punto
-Media   → 2 puntos
-Alta    → 3 puntos
-Crítica → 4 puntos
+```bash
+cd <repository-root>
+python -m venv .venv
+source .venv/bin/activate  # Linux/macOS
+# .venv\Scripts\activate  # Windows
+pip install -U pip
+pip install pandas numpy matplotlib jupyter
 ```
 
-### 3.2 SLA vencido (`score_sla`)
+Si el proyecto usa otros paquetes, los indico en su sección de ejecución.
 
-```text
-sla_vencido = "Sí" → +3 puntos
-sla_vencido = "No" → +0 puntos
+## Ejecución
+
+```bash
+cd <repository-root>
+source .venv/bin/activate  # Linux/macOS
+# .venv\Scripts\activate  # Windows
+cd p04_tickets_soporte
+jupyter notebook
 ```
 
-### 3.3 Días abiertos (`score_dias`)
+Ejecutar:
+- `notebooks/p04_priorizacion_tickets.ipynb`
 
-Se calcula la cantidad de días que el ticket ha estado abierto (o demoró en cerrarse) y
-se asigna un puntaje:
+## Entradas y salidas
 
-```text
-> 10 días        → +3 puntos
-6 a 10 días      → +2 puntos
-3 a 5 días       → +1 punto
-0 a 2 días       → +0 puntos
-```
+- **Entrada**: `data/tickets_soporte_demo.csv`.
+- **Salidas**:
+  - `data/tickets_priorizados.csv` (incluye `score_prioridad_base`, `score_sla`, `score_dias`, `score_estado`, `score_total`).
+  - `img/score_promedio_por_categoria.png`.
 
-### 3.4 Estado actual (`score_estado`)
+## Metodología (resumen técnico)
 
-```text
-estado = Abierto o En curso → +2 puntos
-estado = Resuelto o Cerrado → +0 puntos
-```
+- Asignación de puntajes por criterios (prioridad, SLA vencido, días abiertos, estado).
+- Suma ponderada → `score_total`.
+- Ordenamiento descendente por score (y desempate por días abiertos).
+- Export de CSV y una visualización simple para análisis por categoría.
 
-### 3.5 Score total
+## Resultados esperables / cómo interpretar
 
-El **score_total** es la suma:
+Lo útil aquí es que el output es un artefacto operativo:
+- se puede cargar directo a Excel/Power BI,
+- sirve como cola diaria y como base de gobernanza,
+- permite explicar por qué un ticket está arriba (auditable).
 
-```text
-score_total =
-    score_prioridad_base
-  + score_sla
-  + score_dias
-  + score_estado
-```
+## Notas y referencias técnicas
 
-Finalmente, los tickets se ordenan de forma descendente por `score_total` y, en caso de
-empate, por `dias_abierto`.
+- Scoring explicable como alternativa liviana a modelos ML cuando se requiere gobernanza.
+- SLA + antigüedad + estado suelen ser predictores fuertes del riesgo operacional en soporte.
+
+## Contacto & Presencia Online
+
+- Email: teleobjetivo.boutique@gmail.com
+- Web: www.teleobjetivo.cl
+- Instagram: @tele.objetivo
+- GitHub: https://github.com/teleobjetivo
+
+**Rol**: University Lecturer (Data & Analytics) · Science Communicator · Research Collaborator
 
 ---
 
-## 4. Salidas del proyecto
+## Related Work (Author)
 
-### 4.1 CSV priorizado
-
-El archivo:
-
-```text
-data/tickets_priorizados.csv
-```
-
-contiene todos los tickets originales más las columnas de score:
-
-- `score_prioridad_base`
-- `score_sla`
-- `score_dias`
-- `score_estado`
-- `score_total`
-
-Este archivo se puede:
-
-- cargar en Excel,
-- consumir desde Power BI,
-- o integrar en otro flujo de priorización.
-
-### 4.2 Top 10 de tickets críticos
-
-En el notebook se construye un **Top 10 de tickets más críticos**, mostrando para cada uno:
-
-- `ticket_id`
-- `categoria`
-- `prioridad`
-- `estado`
-- `sla_vencido`
-- `dias_abierto`
-- `score_total`
-
-Este listado es un ejemplo directo de cómo la lógica de negocio se traduce en una **cola
-de atención priorizada**.
-
-### 4.3 Visualización: score por categoría
-
-Se genera la imagen:
-
-```text
-img/score_promedio_por_categoria.png
-```
-
-que muestra el **score promedio de prioridad por categoría de ticket**. Esto permite
-identificar categorías que, en promedio, concentran más riesgo operacional (por ejemplo,
-VPN o SAP frente a incidentes menores).
+- P01 — Asset Health Analytics for Mining Operations  
+- P02 — Maintenance Backlog Prioritization  
+- P03 — Failure Pattern Analysis for Conveyor Systems  
+- P04 — IT Support Ticket Scoring  
+- P05 — Credit Risk Segmentation  
+- P06 — Multi-Criteria Scoring for Astrophotography Planning  
+- P07 — Scientific Data Pipelines (ALMA-inspired)  
+- P08 — Automated Exploratory Data Analysis (DataCopilot)  
+- P09 — Static Executive KPI Dashboards  
+- P10 — Analytics Readiness Framework  
 
 ---
 
-## 5. Cómo ejecutar el proyecto
+---
 
-1. Activar el entorno virtual (desde la raíz del repositorio general):
+## Technical References & Background
 
-   ```bash
-   cd "/Users/hugobaghetti/Desktop/PROYECTOS/Proyecto Mineria"
-   source .venv/bin/activate
-   ```
-
-2. Entrar en la carpeta del proyecto P04:
-
-   ```bash
-   cd p04_tickets_soporte
-   ```
-
-3. Abrir el notebook en VS Code o Jupyter:
-
-   - `notebooks/p04_priorizacion_tickets.ipynb`
-
-4. Ejecutar todas las celdas en orden.  
-   Al finalizar, deberías tener:
-
-   - `data/tickets_priorizados.csv` generado/actualizado.
-   - `img/score_promedio_por_categoria.png` creado.
+1. Han, J., Kamber, M., & Pei, J. (2012). *Data Mining: Concepts and Techniques*. Morgan Kaufmann.
+2. Provost, F., & Fawcett, T. (2013). *Data Science for Business*. O’Reilly Media.
+3. CRISP-DM 1.0 — Cross-Industry Standard Process for Data Mining.
+4. ISO/IEC 25010 — Systems and Software Quality Models.
+5. Basel Committee on Banking Supervision. *Principles for the Management of Credit Risk*.
 
 ---
 
-## 6. Cómo interpretar los resultados
-
-Este proyecto ejemplifica cómo, a partir de datos de tickets de soporte y algunas reglas
-sencillas pero claras:
-
-- se puede **formalizar criterios de priorización** que normalmente están “en la cabeza”
-  del equipo,
-- se identifican tickets con **alto riesgo operacional** (SLA vencido, alta criticidad,
-  muchos días abiertos),
-- y se genera un artefacto (`tickets_priorizados.csv`) listo para ser integrado en la
-operación diaria o en un dashboard.
-
-La lógica es completamente **explicable y auditable**, lo que facilita su adopción en
-equipos de TI y operaciones.
-
-## 👤 About Me – Hugo Baghetti Calderón
-
-Ingeniero en Informática y Magíster en Gestión TI, con más de 15 años liderando proyectos de tecnología, analítica y transformación digital. Mi trabajo combina estrategia, ciencia de datos y operación real de negocio, integrando capacidades técnicas con visión ejecutiva.
-
-Me especializo en estructurar y escalar procesos de análisis basados en datos, generar valor desde la observación —desde la operación minera hasta la investigación astronómica— y traducir métricas complejas en decisiones claras. He trabajado en arquitectura de datos, integración de sistemas, automatización, gestión de plataformas TI y habilitación de equipos técnicos.
-
-Exploro, investigo y construyo soluciones. Mi enfoque une el método científico, la ingeniería y la narrativa visual; desde modelos analíticos hasta proyectos de cielo profundo. Creo en el uso inteligente de la información, en la rigurosidad técnica y en la elegancia de las soluciones simples que funcionan.
-
 ---
 
-### 🔗 Contacto & Presencia Online
+## Author & Professional Profile
 
-- ✉️ **Email**: [teleobjetivo.boutique@gmail.com](mailto:teleobjetivo.boutique@gmail.com)  
-- 🌐 **Web**: [www.teleobjetivo.cl](https://www.teleobjetivo.cl)  
-- 📷 **Instagram**: [@tele.objetivo](https://www.instagram.com/tele.objetivo)  
-- 💻 **GitHub (Portafolio)**: [teleobjetivo/analytics-tech-portfolio](https://github.com/teleobjetivo/analytics-tech-portfolio)
+**Hugo Baghetti**  
+Applied Analytics Researcher & Scientific Communicator  
+
+**Areas:** Data Analytics · Decision Support Systems · Applied AI · Data Engineering  
+
+**Contact**
+- Email: teleobjetivo.boutique@gmail.com  
+- Web: https://www.teleobjetivo.cl  
+- GitHub: https://github.com/teleobjetivo  
+- Instagram (visual science communication): https://www.instagram.com/tele.objetivo  
 
 ---

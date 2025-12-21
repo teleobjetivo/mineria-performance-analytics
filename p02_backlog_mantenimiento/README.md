@@ -1,102 +1,143 @@
-# Proyecto 02 – Backlog de Mantenimiento: Priorización de Órdenes de Trabajo
+# P02 — Backlog de Mantenimiento: Priorización de Órdenes de Trabajo
 
-## 1. Contexto
+_Score explicable para ordenar OTs por criticidad, antigüedad y estado._
 
-Este proyecto aborda el análisis de un **backlog de órdenes de trabajo (OT)** de mantenimiento en una faena minera ficticia.  
-El foco está en entender el tamaño y composición del backlog, y en construir un **modelo simple de priorización** que permita ordenar las OT según su impacto potencial en el negocio.
+## Resumen
 
-Los datos están estructurados de forma similar a un extracto de **SAP PM / ERP**, e incluyen criticidades, fechas, estados y características técnicas de las OT.
+Soy Hugo Baghetti. Aquí construyo un análisis de backlog de órdenes de trabajo (OT) y un modelo simple de priorización para convertir un listado grande (y desordenado) en un ranking accionable.
 
-## 2. Preguntas de negocio
+## Por qué hice este proyecto
 
-- ¿Cuál es el **tamaño del backlog** y cómo se distribuye por criticidad y estado?
-- ¿Cuál es la **edad** del backlog (días desde la creación de la OT)?
-- ¿Qué porcentaje del backlog está **vencido** respecto de una fecha de corte?
-- ¿Cómo se puede definir un **score de prioridad** que ordene las OT de forma consistente y explicable?
+En la práctica, un backlog crece por falta de capacidad, mala planificación o gobernanza débil. El problema no es solo 'cuánto backlog hay', sino cómo decidir qué se atiende primero sin depender del ruido del día. Este proyecto muestra un score transparente y defendible.
 
-## 3. Datos utilizados
+## Qué demuestra (en trabajo real)
 
-- Archivo principal: `data/backlog_ordenes_trabajo.csv`
+- Definición de reglas de negocio en un modelo numérico auditable.
+- Cálculo de KPIs de backlog (tamaño, vencimiento, antigüedad) y visualización.
+- Capacidad de entregar un artefacto listo para operación (ranking).
 
-Campos principales:
+## Estructura del proyecto
 
-- `id_ot`: identificador de la OT de mantenimiento.
-- `equipo`: equipo asociado a la OT.
-- `fecha_creacion`: fecha en que se crea la OT.
-- `fecha_vencimiento`: fecha comprometida o límite de atención.
-- `criticidad_ot`: criticidad de la OT (Alta, Media, Baja).
-- `criticidad_equipo`: criticidad del equipo asociado.
-- `tipo_trabajo`: Correctivo, Preventivo, Inspección, Mejora.
-- `sistema`: sistema intervenido.
-- `estado`: Abierta, En ejecución, Planificada.
-- `dias_backlog`: días transcurridos desde la creación hasta la fecha de corte.
-- `faena`, `mes`: información contextual para el periodo de análisis.
+```text
+p02_backlog_mantenimiento/
+├── data/
+│   └── backlog_ordenes_trabajo.csv
+├── notebooks/
+│   └── p02_analisis_backlog.ipynb
+├── img/
+│   └── (figuras exportadas por el notebook)
+└── README.md
+```
 
-## 4. Enfoque analítico y modelo de prioridad
+## Qué hace cada archivo
 
-El análisis se implementa en:
+- `data/backlog_ordenes_trabajo.csv`: backlog simulado tipo SAP PM/ERP (criticidad, fechas, estado, sistema, etc.).
+- `notebooks/p02_analisis_backlog.ipynb`: KPIs + construcción del score de prioridad.
+- `img/`: figuras para reporte/seguimiento.
 
+## Instalación
+
+> Asumo un entorno virtual `.venv` creado en la raíz del portafolio.
+
+```bash
+cd <repository-root>
+python -m venv .venv
+source .venv/bin/activate  # Linux/macOS
+# .venv\Scripts\activate  # Windows
+pip install -U pip
+pip install pandas numpy matplotlib jupyter
+```
+
+Si el proyecto usa otros paquetes, los indico en su sección de ejecución.
+
+## Ejecución
+
+```bash
+cd <repository-root>
+source .venv/bin/activate  # Linux/macOS
+# .venv\Scripts\activate  # Windows
+cd p02_backlog_mantenimiento
+jupyter notebook
+```
+
+Ejecutar:
 - `notebooks/p02_analisis_backlog.ipynb`
 
-Pasos principales:
+## Entradas y salidas
 
-1. **KPIs de backlog**
-   - Cálculo del tamaño total del backlog.
-   - Distribución por criticidad, estado y otros atributos.
-   - Cálculo de estadísticas sobre `dias_backlog`.
-   - Identificación de OT vencidas respecto a una fecha de corte.
+- **Entrada**: `data/backlog_ordenes_trabajo.csv`.
+- **Salidas**: tablas de KPIs en el notebook y figuras en `img/` (distribución por criticidad, edad del backlog, etc.).
 
-2. **Construcción de un score de prioridad**
-   - Asignación de pesos a:
-     - Criticidad de la OT (`criticidad_ot`).
-     - Criticidad del equipo (`criticidad_equipo`).
-     - Antigüedad de la OT (`dias_backlog`, normalizada).
-     - Estado de la OT (mayor peso a “Abierta” que a “Planificada”).
-   - Definición de un **score numérico** que combina estos factores de forma explicable:
+## Metodología (resumen técnico)
 
-     > Ejemplo de fórmula:  
-     > `score_prioridad = 2 * criticidad_ot + criticidad_equipo + f(dias_backlog) + peso_estado`
+- Cálculo de `dias_backlog` desde `fecha_creacion` a una fecha de corte.
+- Identificación de OT vencidas por `fecha_vencimiento`.
+- Score de prioridad combinando: criticidad OT, criticidad equipo, antigüedad (normalizada) y peso por estado.
+- Ranking final para cola de atención.
 
-   - Ordenamiento del backlog según este score para obtener un **ranking de atención**.
+## Resultados esperables / cómo interpretar
 
-3. **Visualización**
-   - Gráfico de backlog por criticidad de OT.
-   - Distribución de días en backlog.
-   - Relación entre días en backlog y score de prioridad.
+Lo esperable es obtener:
+- Una foto clara del backlog y su envejecimiento.
+- Un ranking que permite discutir capacidad, planificación y riesgo operacional.
+- Un punto de partida para evolucionar a modelos más robustos (SLA real, costos, probabilidad de falla, impacto productivo).
 
-## 5. Resultados clave (ejemplo de interpretación)
+## Notas y referencias técnicas
 
-- El análisis permite cuantificar el backlog total y entender qué proporción corresponde a OT de criticidad **Alta**.
-- La distribución de `dias_backlog` muestra qué tan “envejecido” está el backlog y si existe una cola de órdenes con muchos días de antigüedad.
-- El porcentaje de OT vencidas entrega una señal clara sobre el nivel de cumplimiento de los compromisos de atención.
-- El score de prioridad genera un ranking transparente, donde las OT más críticas, asociadas a equipos críticos y con mayor tiempo en backlog, aparecen en los primeros lugares, facilitando la planificación semanal de mantenimiento.
+- Priorización multicriterio (scoring) y explicabilidad como requisito operacional.
+- Gestión de backlog en mantenimiento: antigüedad + criticidad + vencimiento como señales base.
 
-## 6. Enfoque PDCA (mejora continua)
+## Contacto & Presencia Online
 
-Este proyecto puede insertarse en una lógica de mejora continua (PDCA):
+- Email: teleobjetivo.boutique@gmail.com
+- Web: www.teleobjetivo.cl
+- Instagram: @tele.objetivo
+- GitHub: https://github.com/teleobjetivo
 
-- **Plan**: Definir criterios de criticidad y una fórmula de score de prioridad alineada con la estrategia de la operación.
-- **Do**: Aplicar el modelo al backlog real para ordenar y planificar recursos.
-- **Check**: Monitorear el comportamiento del backlog (tamaño, edad, % vencido) tras algunas semanas de uso del modelo.
-- **Act**: Ajustar pesos y criterios del score según resultados y feedback de planificación/mantenimiento.
-
-De esta forma, el análisis no se queda solo en un reporte estático, sino que se convierte en una **herramienta de gestión** para la toma de decisiones en mantenimiento.
-
-## 👤 About Me – Hugo Baghetti Calderón
-
-Ingeniero en Informática y Magíster en Gestión TI, con más de 15 años liderando proyectos de tecnología, analítica y transformación digital. Mi trabajo combina estrategia, ciencia de datos y operación real de negocio, integrando capacidades técnicas con visión ejecutiva.
-
-Me especializo en estructurar y escalar procesos de análisis basados en datos, generar valor desde la observación —desde la operación minera hasta la investigación astronómica— y traducir métricas complejas en decisiones claras. He trabajado en arquitectura de datos, integración de sistemas, automatización, gestión de plataformas TI y habilitación de equipos técnicos.
-
-Exploro, investigo y construyo soluciones. Mi enfoque une el método científico, la ingeniería y la narrativa visual; desde modelos analíticos hasta proyectos de cielo profundo. Creo en el uso inteligente de la información, en la rigurosidad técnica y en la elegancia de las soluciones simples que funcionan.
+**Rol**: University Lecturer (Data & Analytics) · Science Communicator · Research Collaborator
 
 ---
 
-### 🔗 Contacto & Presencia Online
+## Related Work (Author)
 
-- ✉️ **Email**: [teleobjetivo.boutique@gmail.com](mailto:teleobjetivo.boutique@gmail.com)  
-- 🌐 **Web**: [www.teleobjetivo.cl](https://www.teleobjetivo.cl)  
-- 📷 **Instagram**: [@tele.objetivo](https://www.instagram.com/tele.objetivo)  
-- 💻 **GitHub (Portafolio)**: [teleobjetivo/analytics-tech-portfolio](https://github.com/teleobjetivo/analytics-tech-portfolio)
+- P01 — Asset Health Analytics for Mining Operations  
+- P02 — Maintenance Backlog Prioritization  
+- P03 — Failure Pattern Analysis for Conveyor Systems  
+- P04 — IT Support Ticket Scoring  
+- P05 — Credit Risk Segmentation  
+- P06 — Multi-Criteria Scoring for Astrophotography Planning  
+- P07 — Scientific Data Pipelines (ALMA-inspired)  
+- P08 — Automated Exploratory Data Analysis (DataCopilot)  
+- P09 — Static Executive KPI Dashboards  
+- P10 — Analytics Readiness Framework  
+
+---
+
+---
+
+## Technical References & Background
+
+1. Han, J., Kamber, M., & Pei, J. (2012). *Data Mining: Concepts and Techniques*. Morgan Kaufmann.
+2. Provost, F., & Fawcett, T. (2013). *Data Science for Business*. O’Reilly Media.
+3. CRISP-DM 1.0 — Cross-Industry Standard Process for Data Mining.
+4. ISO/IEC 25010 — Systems and Software Quality Models.
+5. Basel Committee on Banking Supervision. *Principles for the Management of Credit Risk*.
+
+---
+
+---
+
+## Author & Professional Profile
+
+**Hugo Baghetti**  
+Applied Analytics Researcher & Scientific Communicator  
+
+**Areas:** Data Analytics · Decision Support Systems · Applied AI · Data Engineering  
+
+**Contact**
+- Email: teleobjetivo.boutique@gmail.com  
+- Web: https://www.teleobjetivo.cl  
+- GitHub: https://github.com/teleobjetivo  
+- Instagram (visual science communication): https://www.instagram.com/tele.objetivo  
 
 ---

@@ -1,92 +1,134 @@
+# P10 — Analytics Readiness Framework (ARF)
 
-# P10 – Analytics Readiness Framework (ARF) for Data‑Driven Organizations
+_Marco de madurez analítica con scoring reproducible y mini‑paper versionable._
 
-Este proyecto define y ejemplifica un **marco de madurez analítica (Analytics Readiness Framework, ARF)** pensado para áreas de TI, data & analytics y negocio que buscan evaluar de forma estructurada qué tan preparadas están para trabajar realmente basadas en datos.
+## Resumen
 
-El objetivo no es solo hacer gráficos bonitos, sino mostrar **cómo piensa un líder técnico** al momento de:
-- Traducir estrategia en métricas.
-- Definir dimensiones evaluables.
-- Construir un score reproducible.
-- Comunicar resultados en un lenguaje ejecutivo.
+Soy Hugo Baghetti. Este proyecto define un marco de madurez analítica (ARF‑1 a ARF‑5) y lo aterriza en un score numérico con dimensiones medibles (personas, procesos, datos, tecnología, gobierno). El código genera figuras reproducibles y un documento tipo paper.
 
-> Este proyecto funciona como “paper vivo”: el código genera las figuras y el documento técnico se puede versionar y extender.
+## Por qué hice este proyecto
 
----
+En organizaciones, el problema no es 'hacer analítica' sino saber qué tan preparada está la empresa para sostenerla. Yo necesitaba un esquema claro para diagnosticar, discutir brechas y priorizar hoja de ruta (2–3 años) con lenguaje ejecutivo.
 
-## 🎯 Objetivos del Proyecto
+## Qué demuestra (en trabajo real)
 
-1. Definir un **framework de madurez analítica** con niveles claros (ARF‑1 a ARF‑5).
-2. Modelar una **métrica numérica de readiness** combinando varias dimensiones (personas, procesos, datos, tecnología, gobierno).
-3. Generar **figuras reproducibles** para un informe tipo paper (bar chart de niveles y distribución de score).
-4. Entregar un **documento técnico** en lenguaje profesional que pueda ser usado como:
-   - base de consultoría,
-   - apoyo en reuniones ejecutivas,
-   - anexo técnico en procesos de selección o licitación.
+- Traducción de estrategia a dimensiones medibles.
+- Construcción de scoring y comunicación ejecutiva.
+- Producción de artefactos: figuras + paper, versionables como código.
 
----
+## Estructura del proyecto
 
-## 📂 Estructura del Proyecto
-
-```bash
+```text
 p10_analytics_readiness_framework/
-├── README.md                 # Descripción ejecutiva del proyecto
 ├── paper/
-│   ├── paper_p10.md          # Mini-paper en formato Markdown
-│   └── figures/              # Figuras generadas por el script
+│   ├── paper_p10.md
+│   └── figures/
 │       ├── arf_levels.png
 │       └── arf_score_distribution.png
-└── src/
-    └── generate_figures_p10.py  # Script para generar figuras y dataset simulado
+├── src/
+│   └── generate_figures_p10.py
+└── README.md
 ```
 
----
+## Qué hace cada archivo
 
-## 🧪 Cómo Ejecutar el Proyecto
+- `src/generate_figures_p10.py`: genera dataset simulado, calcula score y exporta figuras.
+- `paper/paper_p10.md`: documento técnico (mini‑paper).
+- `paper/figures/`: figuras generadas.
 
-Asumiendo que ya tienes creado y activado el entorno virtual en la carpeta raíz del portafolio (`Proyecto Mineria/.venv`):
+## Instalación
 
 ```bash
-cd "/Users/hugobaghetti/Desktop/PROYECTOS/Proyecto Mineria"
-source .venv/bin/activate
-
-# Instalar dependencias si hiciera falta
+cd <repository-root>
+source .venv/bin/activate  # Linux/macOS
+# .venv\Scripts\activate  # Windows
 pip install pandas matplotlib
+```
 
-# Ejecutar el generador de figuras de P10
+## Ejecución
+
+```bash
+cd <repository-root>
+source .venv/bin/activate  # Linux/macOS
+# .venv\Scripts\activate  # Windows
 python p10_analytics_readiness_framework/src/generate_figures_p10.py
 ```
 
-Esto generará:
+Figuras:
+- `p10_analytics_readiness_framework/paper/figures/arf_levels.png`
+- `p10_analytics_readiness_framework/paper/figures/arf_score_distribution.png`
 
-- `paper/figures/arf_levels.png`
-- `paper/figures/arf_score_distribution.png`
+## Entradas y salidas
 
-Puedes abrir luego `paper/paper_p10.md` en VS Code o cualquier editor Markdown para revisar el contenido como mini‑paper.
+- **Entrada**: en la versión demo, el dataset es simulado dentro del script.
+- **Salidas**: figuras en `paper/figures/` + contenido en `paper/paper_p10.md`.
+
+## Metodología (resumen técnico)
+
+- Definición de dimensiones y niveles (ARF‑1…ARF‑5).
+- Score compuesto sobre dimensiones (ponderación explícita).
+- Generación de figuras para comunicación ejecutiva.
+
+## Resultados esperables / cómo interpretar
+
+Resultado: un marco listo para discusión real (diagnóstico y roadmap). Es útil para consultoría interna, comités de datos y procesos de selección donde se evalúa pensamiento estratégico.
+
+## Notas y referencias técnicas
+
+- Frameworks de madurez: evaluación por dimensiones y niveles.
+- Artefactos reproducibles: figuras generadas por código para evitar 'presentaciones sin trazabilidad'.
+
+## Contacto & Presencia Online
+
+- Email: teleobjetivo.boutique@gmail.com
+- Web: www.teleobjetivo.cl
+- Instagram: @tele.objetivo
+- GitHub: https://github.com/teleobjetivo
+
+**Rol**: University Lecturer (Data & Analytics) · Science Communicator · Research Collaborator
 
 ---
 
-## 🧠 Qué demuestra este proyecto
+## Related Work (Author)
 
-Desde el punto de vista profesional, este proyecto muestra que puedes:
-
-- **Definir marcos conceptuales** (no solo código).
-- Aterrizar ideas en **métricas y dimensiones medibles**.
-- Generar **artefactos ejecutivos** (figuras y documentos) para discusión estratégica.
-- Trabajar con **ciencia de datos ligera + pensamiento de consultor**.
-
-Es el tipo de iniciativa que un **Gerente TI, Head of Data, Chief Data Officer o Arquitecto** podría liderar al diseñar una hoja de ruta analítica a 2–3 años.
+- P01 — Asset Health Analytics for Mining Operations  
+- P02 — Maintenance Backlog Prioritization  
+- P03 — Failure Pattern Analysis for Conveyor Systems  
+- P04 — IT Support Ticket Scoring  
+- P05 — Credit Risk Segmentation  
+- P06 — Multi-Criteria Scoring for Astrophotography Planning  
+- P07 — Scientific Data Pipelines (ALMA-inspired)  
+- P08 — Automated Exploratory Data Analysis (DataCopilot)  
+- P09 — Static Executive KPI Dashboards  
+- P10 — Analytics Readiness Framework  
 
 ---
 
-## 👤 About Me – Hugo Baghetti Calderón
+---
 
-Ingeniero en Informática y Magíster en Gestión TI, con más de 15 años liderando proyectos de tecnología, analítica y transformación digital. Mi trabajo combina estrategia, ciencia de datos y operación real de negocio, integrando capacidades técnicas con visión ejecutiva.
+## Technical References & Background
 
-Me especializo en estructurar y escalar procesos de análisis basados en datos, generar valor desde la observación —desde la operación minera hasta la investigación astronómica— y traducir métricas complejas en decisiones claras. He trabajado en arquitectura de datos, integración de sistemas, automatización, gestión de plataformas TI y habilitación de equipos técnicos.
+1. Han, J., Kamber, M., & Pei, J. (2012). *Data Mining: Concepts and Techniques*. Morgan Kaufmann.
+2. Provost, F., & Fawcett, T. (2013). *Data Science for Business*. O’Reilly Media.
+3. CRISP-DM 1.0 — Cross-Industry Standard Process for Data Mining.
+4. ISO/IEC 25010 — Systems and Software Quality Models.
+5. Basel Committee on Banking Supervision. *Principles for the Management of Credit Risk*.
 
-Exploro, investigo y construyo soluciones. Mi enfoque une el método científico, la ingeniería y la narrativa visual; desde modelos analíticos hasta proyectos de cielo profundo. Creo en el uso inteligente de la información, en la rigurosidad técnica y en la elegancia de las soluciones simples que funcionan.
+---
 
-- 📧 Email: `teleobjetivo.boutique@gmail.com`
-- 🌐 Web: [www.teleobjetivo.cl](https://www.teleobjetivo.cl)
-- 📷 Instagram: [@tele.objetivo](https://www.instagram.com/tele.objetivo)
-- 💻 GitHub (portafolio): [`teleobjetivo/analytics-tech-portfolio`](https://github.com/teleobjetivo/analytics-tech-portfolio)
+---
+
+## Author & Professional Profile
+
+**Hugo Baghetti**  
+Applied Analytics Researcher & Scientific Communicator  
+
+**Areas:** Data Analytics · Decision Support Systems · Applied AI · Data Engineering  
+
+**Contact**
+- Email: teleobjetivo.boutique@gmail.com  
+- Web: https://www.teleobjetivo.cl  
+- GitHub: https://github.com/teleobjetivo  
+- Instagram (visual science communication): https://www.instagram.com/tele.objetivo  
+
+---
